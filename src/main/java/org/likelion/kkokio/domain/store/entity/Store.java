@@ -1,6 +1,7 @@
 package org.likelion.kkokio.domain.store.entity;
 
 import jakarta.persistence.*;
+import org.likelion.kkokio.domain.adminAccount.entity.AdminAccount;
 import org.likelion.kkokio.domain.category.entity.Category;
 import org.likelion.kkokio.domain.order.entity.Orders;
 import org.likelion.kkokio.global.base.entity.BaseEntity;
@@ -19,7 +20,9 @@ public class Store extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long storeId;
 
-    //Account 외래키 추가 예정
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id", nullable = false)
+    private AdminAccount admin_account;
 
     @Column(nullable = false, length = 254)
     private String storeName;
@@ -36,4 +39,12 @@ public class Store extends BaseEntity {
 
     @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
     private List<Orders> orders = new ArrayList<>();
+
+    public void uploadImageUrl(String profile_img_url) {
+        this.profile_img_url = profile_img_url;
+    }
+
+    public void connetionAdminAccount(AdminAccount adminAccount) {
+        this.admin_account = adminAccount;
+    }
 }
