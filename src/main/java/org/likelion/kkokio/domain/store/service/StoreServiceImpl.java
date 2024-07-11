@@ -1,5 +1,6 @@
 package org.likelion.kkokio.domain.store.service;
 
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.likelion.kkokio.domain.adminAccount.entity.AdminAccount;
 import org.likelion.kkokio.domain.adminAccount.repository.AdminAccountRepository;
@@ -23,6 +24,7 @@ public class StoreServiceImpl implements StoreService {
     private final StoreRepository storeRepository;
     private final ImageService imageService;
     private final ModelMapper modelMapper;
+    private final EntityManager entityManager;
 
     Long MemberId = 1L;
 
@@ -31,9 +33,17 @@ public class StoreServiceImpl implements StoreService {
         AdminAccount adminAccount = adminAccountRepository.findById(MemberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         Store store = modelMapper.map(storeInfoRequestDTO, Store.class);
-        store.uploadImageUrl(imageService.uploadImage(image));
+
+        if(image != null && !image.isEmpty())
+            store.uploadImageUrl(imageService.uploadImage(image));
+
         store.connetionAdminAccount(adminAccount);
-        storeRepository.save(store);
-        return ResponseEntity.ok(modelMapper.map(store, StoreInfoResponseDTO.class));
+        storeRepository.saveAndFlush(store);
+        entityManager.clear();
+
+        return ResponseEntity.ok(
+                modelMapper.map(storeRepository.findById(store.getStoreId())
+                                .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND)),
+                        StoreInfoResponseDTO.class));
     }
 }

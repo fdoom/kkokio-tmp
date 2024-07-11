@@ -19,7 +19,7 @@ public class StoreController {
     @PostMapping("/createStoreInfo")
     public ResponseEntity<StoreInfoResponseDTO> createStoreInfo(
             @RequestPart StoreInfoRequestDTO storeInfoRequestDTO,
-            @RequestPart MultipartFile image
+            @RequestPart(required = false) MultipartFile image
             ) {
         return storeService.createStoreInfo(image, storeInfoRequestDTO);
     }
