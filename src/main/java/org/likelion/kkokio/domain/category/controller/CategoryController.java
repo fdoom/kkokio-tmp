@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.likelion.kkokio.domain.category.dto.request.CategoryInfoRequestDTO;
 import org.likelion.kkokio.domain.category.dto.response.CategoryInfoResponseDTO;
 import org.likelion.kkokio.domain.category.service.CategoryService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,7 +40,7 @@ public class CategoryController {
     }
 
     @GetMapping("/info/{storeId}")
-    public ResponseEntity<List<CategoryInfoResponseDTO>> getCategoryInfo(@PathVariable Long storeId) {
-        return categoryService.getCategoryInfo(storeId);
+    public ResponseEntity<Page<CategoryInfoResponseDTO>> getCategoryInfo(@PathVariable Long storeId, @PageableDefault(sort = "categoryId") Pageable pageable) {
+        return categoryService.getCategoryInfo(storeId, pageable);
     }
 }

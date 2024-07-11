@@ -12,6 +12,8 @@ import org.likelion.kkokio.domain.store.repository.StoreRepository;
 import org.likelion.kkokio.global.base.exception.CustomException;
 import org.likelion.kkokio.global.base.exception.ErrorCode;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,12 +52,12 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public ResponseEntity<List<StoreInfoResponseDTO>> getStoreInfoList() {
+    public ResponseEntity<Page<StoreInfoResponseDTO>> getStoreInfoList(Pageable pageable) {
         AdminAccount adminAccount = adminAccountRepository.findById(MemberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        return ResponseEntity.ok(storeRepository.findByAdminAccountAndDeletedAtIsNull(adminAccount).stream().map( store ->
-                modelMapper.map(store, StoreInfoResponseDTO.class)).toList());
+        return ResponseEntity.ok(storeRepository.findByAdminAccountAndDeletedAtIsNull(adminAccount, pageable).map( store ->
+                modelMapper.map(store, StoreInfoResponseDTO.class)));
     }
 
     @Override
