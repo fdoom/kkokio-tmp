@@ -15,14 +15,9 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     Optional<Category> findByCategoryNameAndStoreId(Long storeId, String categoryName);
 
     @Query("SELECT c FROM Category c JOIN c.store s JOIN s.adminAccount a " +
-            "WHERE a.deletedAt IS NULL AND s.deletedAt IS NULL AND c.deletedAt IS NULL AND " +
-            "a.accountId = :accountId AND c.categoryId = :categoryId")
-    Optional<Category> findByCategoryIdAndAdminAccountAndDeletedAtIsNotNull(Long accountId, Long categoryId);
-
-    @Query("SELECT c FROM Category c JOIN c.store s JOIN s.adminAccount a " +
             "WHERE a.deletedAt IS NULL AND s.deletedAt IS NULL AND c.deletedAt IS NULL AND" +
             " a.accountId = :accountId AND c.categoryId = :categoryId")
-    Optional<Category> findbIdAndAdminAccountIdDeletedAtISNULL(Long accountId, Long categoryId);
+    Optional<Category> findbIdAndAdminAccountIdDeletedAtIsNULL(Long accountId, Long categoryId);
 
     @Query("SELECT c FROM Category c JOIN c.store s JOIN s.adminAccount a " +
             "WHERE a.deletedAt IS NULL AND s.deletedAt IS NULL AND c.deletedAt IS NULL " +

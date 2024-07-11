@@ -21,8 +21,9 @@ public enum ErrorCode {
     // CATEGORY
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "카테고리 정보가 존재하지 않습니다."),
 
-    DUPLICATED_CATEGORYNAME(HttpStatus.CONFLICT, "카테고리 이름 정보가 중복되었습니다.")
+    DUPLICATED_CATEGORYNAME(HttpStatus.CONFLICT, "카테고리 이름 정보가 중복되었습니다."),
 
+    MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "메뉴 정보를 찾지 못했습니다.")
     ;
 
     private final HttpStatus status;
