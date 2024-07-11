@@ -1,6 +1,7 @@
 package org.likelion.kkokio.domain.store.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import org.likelion.kkokio.domain.adminAccount.entity.AdminAccount;
 import org.likelion.kkokio.domain.category.entity.Category;
 import org.likelion.kkokio.domain.order.entity.Orders;
@@ -9,6 +10,7 @@ import org.likelion.kkokio.global.base.entity.BaseEntity;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @Entity
 @AttributeOverrides({
         @AttributeOverride(name = "createdAt", column = @Column(name = "store_create_at", nullable = false, updatable = false)),
