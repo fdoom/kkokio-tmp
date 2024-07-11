@@ -2,6 +2,7 @@ package org.likelion.kkokio.global.base.exception;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import org.hibernate.query.sqm.PathElementException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -45,5 +46,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(e.getStatusCode())
                 .body(new ErrorResponse(HttpStatus.NOT_FOUND, e.getMessage()));
+    }
+
+    @ExceptionHandler(PathElementException.class)
+    public ResponseEntity<ErrorResponse> handlePathElementException(PathElementException e) {
+        String errorMessage = e.getMessage();
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(HttpStatus.BAD_REQUEST, errorMessage));
     }
 }
