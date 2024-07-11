@@ -13,10 +13,11 @@ import org.likelion.kkokio.domain.store.repository.StoreRepository;
 import org.likelion.kkokio.global.base.exception.CustomException;
 import org.likelion.kkokio.global.base.exception.ErrorCode;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +26,6 @@ public class CategoryServiceImpl implements CategoryService {
     private final AdminAccountRepository adminAccountRepository;
     private final StoreRepository storeRepository;
     private final ModelMapper modelMapper;
-    private final EntityManager entityManager;
 
     private Long MemberId = 1L;
     @Override
@@ -39,26 +39,30 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category category = modelMapper.map(categoryInfoRequestDTO, Category.class);
         category.createInfo(store);
-        categoryRepository.saveAndFlush(category);
-        entityManager.clear();
+        categoryRepository.save(category);
 
-        return ResponseEntity.ok(
-                modelMapper.map(
-                categoryRepository.findById(category.getCategoryId())
-                        .orElseThrow(()-> new CustomException(ErrorCode.CATEGORY_NOT_FOUND)),
-                        CategoryInfoResponseDTO.class
-                )
-        );
+        CategoryInfoResponseDTO categoryInfoResponseDTO = modelMapper.map(store, CategoryInfoResponseDTO.class);
+        modelMapper.map(category, categoryInfoResponseDTO);
+        return ResponseEntity.ok(categoryInfoResponseDTO);
     }
 
     @Override
     public ResponseEntity<CategoryInfoResponseDTO> updateCategoryInfo(Long categoryId, CategoryInfoRequestDTO categoryInfoRequestDTO) {
+        AdminAccount adminAccount = adminAccountRepository.findById(MemberId).orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
         Category category = categoryRepository.findbIdAndAdminAccountIdDeletedAtIsNULL(MemberId, categoryId)
                 .orElseThrow(()->new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
+        Store store = storeRepository.findByAdminAccountAndCategoryAndDeletedAtIsNull(adminAccount, category)
+                        .orElseThrow(()->new CustomException(ErrorCode.STORE_NOT_FOUND));
+
+        if(categoryRepository.findByCategoryNameAndStoreId(store.getStoreId(), categoryInfoRequestDTO.getCategoryName()).isPresent())
+            throw new CustomException(ErrorCode.DUPLICATED_CATEGORYNAME);
+
         modelMapper.map(categoryInfoRequestDTO, category);
         categoryRepository.save(category);
 
-        return ResponseEntity.ok(modelMapper.map(category, CategoryInfoResponseDTO.class));
+        CategoryInfoResponseDTO categoryInfoResponseDTO = modelMapper.map(store, CategoryInfoResponseDTO.class);
+        modelMapper.map(category, categoryInfoResponseDTO);
+        return ResponseEntity.ok(categoryInfoResponseDTO);
     }
 
     @Override
@@ -71,14 +75,15 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public ResponseEntity<List<CategoryInfoResponseDTO>> getCategoryInfo(Long storeId) {
+    public ResponseEntity<Page<CategoryInfoResponseDTO>> getCategoryInfo(Long storeId, Pageable pageable) {
         return ResponseEntity.ok(
-                categoryRepository.findByStoreIdAndDeletedAt(storeId, MemberId)
-                        .filter(categories -> !categories.isEmpty())
-                        .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND))
-                        .stream()
-                        .map(category -> modelMapper.map(category, CategoryInfoResponseDTO.class))
-                        .toList()
-        );
+                categoryRepository.findByStoreIdAndDeletedAt(storeId, MemberId, pageable)
+                        .map(tuple -> {
+                            Category category = (Category) tuple[0];
+                            Store store = (Store) tuple[1];
+                            CategoryInfoResponseDTO categoryInfoResponseDTO = modelMapper.map(store, CategoryInfoResponseDTO.class);
+                            modelMapper.map(category, categoryInfoResponseDTO);
+                            return categoryInfoResponseDTO;
+                        }));
     }
 }
