@@ -5,6 +5,10 @@ import org.likelion.kkokio.domain.menu.dto.request.MenuInfoPatchRequestDTO;
 import org.likelion.kkokio.domain.menu.dto.request.MenuInfoRequestDTO;
 import org.likelion.kkokio.domain.menu.dto.response.MenuInfoResponseDTO;
 import org.likelion.kkokio.domain.menu.service.MenuService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,16 +45,17 @@ public class MenuController {
     }
 
     @GetMapping("/info/store/{storeId}")
-    public ResponseEntity<List<MenuInfoResponseDTO>> getMenuInfoStoreId(@PathVariable Long storeId) {
-        return menuService.getMenuInfoStoreId(storeId);
+    public ResponseEntity<Page<MenuInfoResponseDTO>> getMenuInfoStoreId(@PathVariable Long storeId, @PageableDefault(sort = "menuId") Pageable pageable) {
+        return menuService.getMenuInfoStoreId(storeId, pageable);
     }
 
     @GetMapping("/info/store/{storeId}/category/{categoryId}")
-    public ResponseEntity<List<MenuInfoResponseDTO>> getMenuInfoStoreIdAndcategoryId(
-            @PathVariable Long storeId, @PathVariable Long categoryId
+    public ResponseEntity<Page<MenuInfoResponseDTO>> getMenuInfoStoreIdAndcategoryId(
+            @PathVariable Long storeId, @PathVariable Long categoryId, @PageableDefault(sort = "menuId") Pageable pageable
     ) {
-        return menuService.getMenuInfoStoreIdAndcategoryId(storeId, categoryId);
+        return menuService.getMenuInfoStoreIdAndcategoryId(storeId, categoryId, pageable);
     }
+
 
     @DeleteMapping("/image/{menuId}")
     public ResponseEntity<MenuInfoResponseDTO> deleteImage(@PathVariable Long menuId) {

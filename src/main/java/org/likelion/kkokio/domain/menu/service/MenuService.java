@@ -4,6 +4,8 @@ package org.likelion.kkokio.domain.menu.service;
 import org.likelion.kkokio.domain.menu.dto.request.MenuInfoPatchRequestDTO;
 import org.likelion.kkokio.domain.menu.dto.request.MenuInfoRequestDTO;
 import org.likelion.kkokio.domain.menu.dto.response.MenuInfoResponseDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,9 +18,9 @@ public interface MenuService {
 
     ResponseEntity<Void> deleteMenuInfo(Long menuId);
 
-    ResponseEntity<List<MenuInfoResponseDTO>> getMenuInfoStoreId(Long storeId);
+    ResponseEntity<Page<MenuInfoResponseDTO>> getMenuInfoStoreId(Long storeId, Pageable pageable);
 
-    ResponseEntity<List<MenuInfoResponseDTO>> getMenuInfoStoreIdAndcategoryId(Long storeId, Long categoryId);
+    ResponseEntity<Page<MenuInfoResponseDTO>> getMenuInfoStoreIdAndcategoryId(Long storeId, Long categoryId, Pageable pageable);
 
     ResponseEntity<MenuInfoResponseDTO> deleteImage(Long menuId);
 }

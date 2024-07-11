@@ -15,6 +15,8 @@ import org.likelion.kkokio.domain.menu.repository.MenuRepository;
 import org.likelion.kkokio.global.base.exception.CustomException;
 import org.likelion.kkokio.global.base.exception.ErrorCode;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -86,32 +88,34 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public ResponseEntity<List<MenuInfoResponseDTO>> getMenuInfoStoreId(Long storeId) {
-        return ResponseEntity.ok(menuRepository.getMenuInfoStoreId(storeId)
-                .filter(menus -> !menus.isEmpty())
-                .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND))
-                .stream().map(menu -> {
-                    MenuInfoResponseDTO menuInfoResponseDTO = new MenuInfoResponseDTO();
-                    CategoryInfoResponseDTO categoryInfoResponseDTO = modelMapper.map(menu.getCategory(), CategoryInfoResponseDTO.class);
-                    modelMapper.map(categoryInfoResponseDTO, menuInfoResponseDTO);
-                    modelMapper.map(menu, menuInfoResponseDTO);
-                    return menuInfoResponseDTO;
-                }).toList());
-    }
-
-    @Override
-    public ResponseEntity<List<MenuInfoResponseDTO>> getMenuInfoStoreIdAndcategoryId(Long storeId, Long categoryId) {
+    public ResponseEntity<Page<MenuInfoResponseDTO>> getMenuInfoStoreId(Long storeId, Pageable pageable) {
         return ResponseEntity.ok(
-                menuRepository.getMenuInfoStoreIdAndcategoryId(storeId, categoryId)
-                        .filter(menus -> !menus.isEmpty())
-                        .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND))
-                        .stream().map(menu -> {
+                menuRepository.getMenuInfoStoreId(storeId, pageable)
+                        .map(tuple -> {
+                            Menu menu = (Menu) tuple[0];
+                            Category category = (Category) tuple[1];
                             MenuInfoResponseDTO menuInfoResponseDTO = new MenuInfoResponseDTO();
-                            CategoryInfoResponseDTO categoryInfoResponseDTO = modelMapper.map(menu.getCategory(), CategoryInfoResponseDTO.class);
+                            CategoryInfoResponseDTO categoryInfoResponseDTO = modelMapper.map(category, CategoryInfoResponseDTO.class);
                             modelMapper.map(categoryInfoResponseDTO, menuInfoResponseDTO);
                             modelMapper.map(menu, menuInfoResponseDTO);
                             return menuInfoResponseDTO;
-                        }).toList());
+                }));
+    }
+
+    @Override
+    public ResponseEntity<Page<MenuInfoResponseDTO>> getMenuInfoStoreIdAndcategoryId(Long storeId, Long categoryId, Pageable pageable) {
+        return ResponseEntity.ok(
+                menuRepository.getMenuInfoStoreIdAndcategoryId(storeId, categoryId, pageable)
+                        .map(tuple -> {
+                            Menu menu = (Menu) tuple[0];
+                            Category category = (Category) tuple[1];
+                            MenuInfoResponseDTO menuInfoResponseDTO = new MenuInfoResponseDTO();
+                            CategoryInfoResponseDTO categoryInfoResponseDTO = modelMapper.map(category, CategoryInfoResponseDTO.class);
+                            modelMapper.map(categoryInfoResponseDTO, menuInfoResponseDTO);
+                            modelMapper.map(menu, menuInfoResponseDTO);
+                            return menuInfoResponseDTO;
+                        })
+        );
     }
 
     @Override
