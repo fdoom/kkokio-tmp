@@ -12,7 +12,7 @@ import java.util.List;
 @AttributeOverrides({
         @AttributeOverride(name = "createdAt", column = @Column(name = "menu_create_at", nullable = false, updatable = false)),
         @AttributeOverride(name = "updatedAt", column = @Column(name = "menu_update_at", nullable = false)),
-        @AttributeOverride(name = "deletedAt", column = @Column(name = "menu_delete_at", updatable = false))
+        @AttributeOverride(name = "deletedAt", column = @Column(name = "menu_delete_at"))
 })
 public class Menu extends BaseEntity {
     @Id

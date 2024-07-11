@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @AttributeOverrides({
         @AttributeOverride(name = "createdAt", column = @Column(name = "order_create_at", nullable = false, updatable = false)),
         @AttributeOverride(name = "updatedAt", column = @Column(name = "order_update_at", nullable = false)),
-        @AttributeOverride(name = "deletedAt", column = @Column(name = "order_delete_at", updatable = false))
+        @AttributeOverride(name = "deletedAt", column = @Column(name = "order_delete_at"))
 })
 public class Orders extends BaseEntity {
     @Id
