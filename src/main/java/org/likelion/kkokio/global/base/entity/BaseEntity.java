@@ -23,7 +23,7 @@ public class BaseEntity {
 
     private LocalDateTime deletedAt;
 
-    protected void deletedInfo() {
+    public void deletedInfo() {
         deletedAt = LocalDateTime.now();
     }
 }

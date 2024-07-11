@@ -16,7 +16,12 @@ public enum ErrorCode {
 
     STORE_USER_NOTMATH(HttpStatus.FORBIDDEN, "식당 가게 주인만 해당 정보를 수정 및 삭제하는 것이 가능합니다."),
 
-    STORE_ALREADY_DELETED(HttpStatus.NOT_FOUND, "식당 정보는 이미 삭제되었습니다.")
+    STORE_ALREADY_DELETED(HttpStatus.NOT_FOUND, "식당 정보는 이미 삭제되었습니다."),
+
+    // CATEGORY
+    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "카테고리 정보가 존재하지 않습니다."),
+
+    DUPLICATED_CATEGORYNAME(HttpStatus.CONFLICT, "카테고리 이름 정보가 중복되었습니다.")
 
     ;
 
