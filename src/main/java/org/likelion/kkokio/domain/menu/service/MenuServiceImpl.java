@@ -113,4 +113,19 @@ public class MenuServiceImpl implements MenuService {
                             return menuInfoResponseDTO;
                         }).toList());
     }
+
+    @Override
+    public ResponseEntity<MenuInfoResponseDTO> deleteImage(Long menuId) {
+        Menu menu = menuRepository.findByIdALLDeletedAtIsNull(menuId, MemberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
+        imageService.deleteImage(menu.getMenuImgUrl());
+        menu.deletImage();
+        menuRepository.save(menu);
+
+        MenuInfoResponseDTO menuInfoResponseDTO = new MenuInfoResponseDTO();
+        CategoryInfoResponseDTO categoryInfoResponseDTO = modelMapper.map(menu.getCategory(), CategoryInfoResponseDTO.class);
+        modelMapper.map(categoryInfoResponseDTO, menuInfoResponseDTO);
+        modelMapper.map(menu, menuInfoResponseDTO);
+        return ResponseEntity.ok(menuInfoResponseDTO);
+    }
 }

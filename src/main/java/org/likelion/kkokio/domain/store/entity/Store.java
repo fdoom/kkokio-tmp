@@ -49,4 +49,8 @@ public class Store extends BaseEntity {
     public void connetionAdminAccount(AdminAccount adminAccount) {
         this.adminAccount = adminAccount;
     }
+
+    public void deleteImage() {
+        this.profile_img_url = null;
+    }
 }
