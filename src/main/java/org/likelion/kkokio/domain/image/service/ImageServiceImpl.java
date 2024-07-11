@@ -47,6 +47,8 @@ public class ImageServiceImpl implements ImageService{
 
     @Override
     public void deleteImage(String imageUrl) {
+        if(imageUrl == null || imageUrl.isEmpty()) return;
+
         String filename = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
         Blob blob = storage.get(bucketName, filename);
         if(blob != null) {

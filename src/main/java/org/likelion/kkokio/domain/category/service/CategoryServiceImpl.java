@@ -53,7 +53,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ResponseEntity<CategoryInfoResponseDTO> updateCategoryInfo(Long categoryId, CategoryInfoRequestDTO categoryInfoRequestDTO) {
-        Category category = categoryRepository.findByCategoryIdAndAdminAccountAndDeletedAtIsNotNull(MemberId, categoryId)
+        Category category = categoryRepository.findbIdAndAdminAccountIdDeletedAtIsNULL(MemberId, categoryId)
                 .orElseThrow(()->new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
         modelMapper.map(categoryInfoRequestDTO, category);
         categoryRepository.save(category);
@@ -63,7 +63,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ResponseEntity<Void> deleteCategoryInfo(Long categoryId) {
-        Category category = categoryRepository.findbIdAndAdminAccountIdDeletedAtISNULL(MemberId, categoryId)
+        Category category = categoryRepository.findbIdAndAdminAccountIdDeletedAtIsNULL(MemberId, categoryId)
                 .orElseThrow(()->new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
         category.deletedInfo();
         categoryRepository.save(category);
