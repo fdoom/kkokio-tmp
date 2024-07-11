@@ -45,4 +45,8 @@ public class Menu extends BaseEntity {
     public void uploadImageUrl(String menuImgUrl) {
         this.menuImgUrl = menuImgUrl;
     }
+
+    public void deletImage() {
+        this.menuImgUrl = null;
+    }
 }

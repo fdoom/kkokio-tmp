@@ -51,4 +51,9 @@ public class MenuController {
     ) {
         return menuService.getMenuInfoStoreIdAndcategoryId(storeId, categoryId);
     }
+
+    @DeleteMapping("/image/{menuId}")
+    public ResponseEntity<MenuInfoResponseDTO> deleteImage(@PathVariable Long menuId) {
+        return menuService.deleteImage(menuId);
+    }
 }

@@ -45,4 +45,8 @@ public class StoreController {
         return storeService.updateStoreInfo(image, storeInfoRequestDTO, storeId);
     }
 
+    @DeleteMapping("/image/{storedId}")
+    public ResponseEntity<StoreInfoResponseDTO> deleteImage(@PathVariable Long storedId) {
+        return storeService.deleteImage(storedId);
+    }
 }
