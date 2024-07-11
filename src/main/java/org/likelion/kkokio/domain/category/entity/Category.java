@@ -1,6 +1,8 @@
 package org.likelion.kkokio.domain.category.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import org.likelion.kkokio.domain.adminAccount.entity.AdminAccount;
 import org.likelion.kkokio.domain.menu.entity.Menu;
 import org.likelion.kkokio.domain.store.entity.Store;
 import org.likelion.kkokio.global.base.entity.BaseEntity;
@@ -8,6 +10,7 @@ import org.likelion.kkokio.global.base.entity.BaseEntity;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @Entity
 @AttributeOverrides({
         @AttributeOverride(name = "createdAt", column = @Column(name = "category_create_at", nullable = false, updatable = false)),
@@ -31,4 +34,8 @@ public class Category extends BaseEntity {
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private List<Menu> menus = new ArrayList<>();
+
+    public void createInfo(Store store) {
+        this.store = store;
+    }
 }
