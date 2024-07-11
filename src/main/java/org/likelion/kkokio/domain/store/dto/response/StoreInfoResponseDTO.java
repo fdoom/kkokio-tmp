@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 public class StoreInfoResponseDTO extends BaseEntityDTO {
+    private Long storeId;
     private String storeName;
     private String storeAddress;
     private String storeSummary;

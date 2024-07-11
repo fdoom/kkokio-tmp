@@ -1,6 +1,7 @@
 package org.likelion.kkokio.domain.image.service;
 
 import com.google.cloud.WriteChannel;
+import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
@@ -42,5 +43,15 @@ public class ImageServiceImpl implements ImageService{
             throw new RuntimeException(e);
         }
         return "https://storage.googleapis.com/" + bucketName + "/" + filename;
+    }
+
+    @Override
+    public void deleteImage(String imageUrl) {
+        String filename = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+        Blob blob = storage.get(bucketName, filename);
+        if(blob != null) {
+            BlobId idWithGeneration = blob.getBlobId();
+            storage.delete(idWithGeneration);
+        }
     }
 }

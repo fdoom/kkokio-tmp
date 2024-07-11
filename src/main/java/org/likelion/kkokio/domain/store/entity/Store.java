@@ -15,7 +15,7 @@ import java.util.List;
 @AttributeOverrides({
         @AttributeOverride(name = "createdAt", column = @Column(name = "store_create_at", nullable = false, updatable = false)),
         @AttributeOverride(name = "updatedAt", column = @Column(name = "store_update_at", nullable = false)),
-        @AttributeOverride(name = "deletedAt", column = @Column(name = "store_delete_at", updatable = false))
+        @AttributeOverride(name = "deletedAt", column = @Column(name = "store_delete_at"))
 })
 public class Store extends BaseEntity {
     @Id
@@ -24,7 +24,7 @@ public class Store extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
-    private AdminAccount admin_account;
+    private AdminAccount adminAccount;
 
     @Column(nullable = false, length = 254)
     private String storeName;
@@ -47,6 +47,10 @@ public class Store extends BaseEntity {
     }
 
     public void connetionAdminAccount(AdminAccount adminAccount) {
-        this.admin_account = adminAccount;
+        this.adminAccount = adminAccount;
+    }
+
+    public void deletedInfo() {
+        super.deletedInfo();
     }
 }

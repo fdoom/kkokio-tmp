@@ -12,7 +12,7 @@ import java.util.List;
 @AttributeOverrides({
         @AttributeOverride(name = "createdAt", column = @Column(name = "category_create_at", nullable = false, updatable = false)),
         @AttributeOverride(name = "updatedAt", column = @Column(name = "category_update_at", nullable = false)),
-        @AttributeOverride(name = "deletedAt", column = @Column(name = "category_delete_at", updatable = false))
+        @AttributeOverride(name = "deletedAt", column = @Column(name = "category_delete_at"))
 })
 @Table(uniqueConstraints = {
         @UniqueConstraint(name = "unique_store_id_category_name", columnNames = {"categoryName", "store_id"})
