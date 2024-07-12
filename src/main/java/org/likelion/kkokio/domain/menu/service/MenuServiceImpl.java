@@ -2,6 +2,7 @@ package org.likelion.kkokio.domain.menu.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.likelion.kkokio.domain.category.dto.another.CategoryDtoOnly;
 import org.likelion.kkokio.domain.category.entity.Category;
 import org.likelion.kkokio.domain.category.repository.CategoryRepository;
 import org.likelion.kkokio.domain.image.service.ImageService;
@@ -43,8 +44,9 @@ public class MenuServiceImpl implements MenuService {
         menu.updateCategoryInfo(category);
         menuRepository.save(menu);
 
-        MenuInfoResponseDTO menuInfoResponseDTO = modelMapper.map(category.getStore(), MenuInfoResponseDTO.class);
-        modelMapper.map(category, menuInfoResponseDTO);
+        MenuInfoResponseDTO menuInfoResponseDTO = MenuInfoResponseDTO.builder()
+                .categoryDtoOnly(modelMapper.map(category, CategoryDtoOnly.class))
+                .build();
         modelMapper.map(menu, menuInfoResponseDTO);
         return ResponseEntity.ok(menuInfoResponseDTO);
     }
@@ -69,8 +71,9 @@ public class MenuServiceImpl implements MenuService {
 
         menuRepository.save(menu);
 
-        MenuInfoResponseDTO menuInfoResponseDTO = modelMapper.map(menu.getCategory().getStore(), MenuInfoResponseDTO.class);
-        modelMapper.map(menu.getCategory(), menuInfoResponseDTO);
+        MenuInfoResponseDTO menuInfoResponseDTO = MenuInfoResponseDTO.builder()
+                .categoryDtoOnly(modelMapper.map(menu.getCategory(), CategoryDtoOnly.class))
+                .build();
         modelMapper.map(menu, menuInfoResponseDTO);
         return ResponseEntity.ok(menuInfoResponseDTO);
     }
@@ -108,18 +111,19 @@ public class MenuServiceImpl implements MenuService {
         menu.deletImage();
         menuRepository.save(menu);
 
-        MenuInfoResponseDTO menuInfoResponseDTO = modelMapper.map(menu.getCategory().getStore(), MenuInfoResponseDTO.class);
-        modelMapper.map(menu.getCategory(), menuInfoResponseDTO);
+        MenuInfoResponseDTO menuInfoResponseDTO = MenuInfoResponseDTO.builder()
+                .categoryDtoOnly(modelMapper.map(menu.getCategory(), CategoryDtoOnly.class))
+                .build();
         modelMapper.map(menu, menuInfoResponseDTO);
         return ResponseEntity.ok(menuInfoResponseDTO);
     }
 
     private MenuInfoResponseDTO MerageMenuInfoResponseDTO(Object[] tuple) {
         Menu menu = (Menu) tuple[0];
-        Store store = (Store) tuple[1];
-        Category category = (Category) tuple[2];
-        MenuInfoResponseDTO menuInfoResponseDTO = modelMapper.map(store, MenuInfoResponseDTO.class);
-        modelMapper.map(category, menuInfoResponseDTO);
+        Category category = (Category) tuple[1];
+        MenuInfoResponseDTO menuInfoResponseDTO = MenuInfoResponseDTO.builder()
+                .categoryDtoOnly(modelMapper.map(category, CategoryDtoOnly.class))
+                .build();
         modelMapper.map(menu, menuInfoResponseDTO);
         return menuInfoResponseDTO;
     }

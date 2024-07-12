@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.likelion.kkokio.domain.ordersMenu.dto.OrdersMenuDTO;
+import org.likelion.kkokio.domain.ordersMenu.dto.OrdersMenuDtoAndMenuDtoAndCategoryDto;
 import org.likelion.kkokio.global.base.dto.BaseEntityDTO;
 
 import java.util.List;
@@ -15,5 +15,5 @@ import java.util.List;
 @Builder
 public class OrderInfoResponseDTO extends BaseEntityDTO {
     private Long orderId;
-    private List<OrdersMenuDTO> ordersMenuDTOList;
+    private List<OrdersMenuDtoAndMenuDtoAndCategoryDto> ordersMenuDtoAndMenuDtoAndCategoryDtoList;
 }

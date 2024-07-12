@@ -1,14 +1,14 @@
 package org.likelion.kkokio.domain.ordersMenu.service;
 
 import lombok.RequiredArgsConstructor;
-import org.likelion.kkokio.domain.category.dto.another.CategoryDtoUsingOrdersMenu;
-import org.likelion.kkokio.domain.menu.dto.another.MenuDtoUsingOrdersMenu;
+import org.likelion.kkokio.domain.category.dto.another.CategoryDtoOnly;
+import org.likelion.kkokio.domain.menu.dto.another.MenuDtoAndCategoryDto;
 import org.likelion.kkokio.domain.menu.entity.Menu;
 import org.likelion.kkokio.domain.menu.repository.MenuRepository;
 import org.likelion.kkokio.domain.order.dto.request.OrderInfoRequestDTO;
 import org.likelion.kkokio.domain.order.entity.Orders;
 import org.likelion.kkokio.domain.order.respository.OrdersRepository;
-import org.likelion.kkokio.domain.ordersMenu.dto.OrdersMenuDTO;
+import org.likelion.kkokio.domain.ordersMenu.dto.OrdersMenuDtoAndMenuDtoAndCategoryDto;
 import org.likelion.kkokio.domain.ordersMenu.entity.OrdersMenu;
 import org.likelion.kkokio.domain.ordersMenu.entity.id.OrderMenuId;
 import org.likelion.kkokio.domain.ordersMenu.repository.OrdersMenuRepository;
@@ -30,7 +30,7 @@ public class OrdersMenuServiceImpl implements OrdersMenuService {
     private final StoreRepository storeRepository;
 
     @Override
-    public List<OrdersMenuDTO> createOrderInfo(Long orderId, List<OrderInfoRequestDTO> orderInfoRequestDTOList, Long storeId) {
+    public List<OrdersMenuDtoAndMenuDtoAndCategoryDto> createOrderInfo(Long orderId, List<OrderInfoRequestDTO> orderInfoRequestDTOList, Long storeId) {
         Orders orders = modelMapper.map(ordersRepository.findByOrderIdAndDeletedAtIsNull(orderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND)), Orders.class);
 
@@ -55,13 +55,13 @@ public class OrdersMenuServiceImpl implements OrdersMenuService {
         );
 
         return ordersMenuRepository.findAllByOrderId(orderId).stream().map(ordersMenu -> {
-            MenuDtoUsingOrdersMenu menuDTOUsingOrdersMenu = MenuDtoUsingOrdersMenu.builder()
-                    .categoryDTOusingOrdersMenu(modelMapper.map(ordersMenu.getMenu().getCategory(), CategoryDtoUsingOrdersMenu.class))
+            MenuDtoAndCategoryDto menuDtoAndCategoryDto = MenuDtoAndCategoryDto.builder()
+                    .categoryDtoOnly(modelMapper.map(ordersMenu.getMenu().getCategory(), CategoryDtoOnly.class))
                     .build();
-            modelMapper.map(ordersMenu.getMenu(), menuDTOUsingOrdersMenu);
+            modelMapper.map(ordersMenu.getMenu(), menuDtoAndCategoryDto);
 
-            return OrdersMenuDTO.builder()
-                    .menuDTOUsingOrdersMenu(menuDTOUsingOrdersMenu)
+            return OrdersMenuDtoAndMenuDtoAndCategoryDto.builder()
+                    .menuDtoAndCategoryDto(menuDtoAndCategoryDto)
                     .amount(ordersMenu.getAmount())
                     .build();
         }).toList();
