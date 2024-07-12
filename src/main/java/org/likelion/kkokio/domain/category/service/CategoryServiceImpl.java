@@ -8,6 +8,7 @@ import org.likelion.kkokio.domain.category.dto.request.CategoryInfoRequestDTO;
 import org.likelion.kkokio.domain.category.dto.response.CategoryInfoResponseDTO;
 import org.likelion.kkokio.domain.category.entity.Category;
 import org.likelion.kkokio.domain.category.repository.CategoryRepository;
+import org.likelion.kkokio.domain.store.dto.response.StoreInfoResponseDTO;
 import org.likelion.kkokio.domain.store.entity.Store;
 import org.likelion.kkokio.domain.store.repository.StoreRepository;
 import org.likelion.kkokio.global.base.exception.CustomException;
@@ -41,7 +42,9 @@ public class CategoryServiceImpl implements CategoryService {
         category.createInfo(store);
         categoryRepository.save(category);
 
-        CategoryInfoResponseDTO categoryInfoResponseDTO = modelMapper.map(store, CategoryInfoResponseDTO.class);
+        CategoryInfoResponseDTO categoryInfoResponseDTO = CategoryInfoResponseDTO.builder()
+                .storeInfoResponseDTO(modelMapper.map(store, StoreInfoResponseDTO.class))
+                .build();
         modelMapper.map(category, categoryInfoResponseDTO);
         return ResponseEntity.ok(categoryInfoResponseDTO);
     }
@@ -60,7 +63,9 @@ public class CategoryServiceImpl implements CategoryService {
         modelMapper.map(categoryInfoRequestDTO, category);
         categoryRepository.save(category);
 
-        CategoryInfoResponseDTO categoryInfoResponseDTO = modelMapper.map(store, CategoryInfoResponseDTO.class);
+        CategoryInfoResponseDTO categoryInfoResponseDTO = CategoryInfoResponseDTO.builder()
+                .storeInfoResponseDTO(modelMapper.map(store, StoreInfoResponseDTO.class))
+                .build();
         modelMapper.map(category, categoryInfoResponseDTO);
         return ResponseEntity.ok(categoryInfoResponseDTO);
     }
@@ -81,7 +86,9 @@ public class CategoryServiceImpl implements CategoryService {
                         .map(tuple -> {
                             Category category = (Category) tuple[0];
                             Store store = (Store) tuple[1];
-                            CategoryInfoResponseDTO categoryInfoResponseDTO = modelMapper.map(store, CategoryInfoResponseDTO.class);
+                            CategoryInfoResponseDTO categoryInfoResponseDTO = CategoryInfoResponseDTO.builder()
+                                    .storeInfoResponseDTO(modelMapper.map(store, StoreInfoResponseDTO.class))
+                                    .build();
                             modelMapper.map(category, categoryInfoResponseDTO);
                             return categoryInfoResponseDTO;
                         }));

@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.likelion.kkokio.domain.category.dto.another.CategoryDtoOnly;
-import org.likelion.kkokio.domain.category.dto.response.CategoryInfoResponseDTO;
 import org.likelion.kkokio.global.base.dto.BaseEntityDTO;
 
 @Getter
