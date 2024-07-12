@@ -1,9 +1,7 @@
 package org.likelion.kkokio.domain.menu.service;
 
 
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import org.likelion.kkokio.domain.category.dto.response.CategoryInfoResponseDTO;
 import org.likelion.kkokio.domain.category.entity.Category;
 import org.likelion.kkokio.domain.category.repository.CategoryRepository;
 import org.likelion.kkokio.domain.image.service.ImageService;
@@ -12,6 +10,7 @@ import org.likelion.kkokio.domain.menu.dto.request.MenuInfoRequestDTO;
 import org.likelion.kkokio.domain.menu.dto.response.MenuInfoResponseDTO;
 import org.likelion.kkokio.domain.menu.entity.Menu;
 import org.likelion.kkokio.domain.menu.repository.MenuRepository;
+import org.likelion.kkokio.domain.store.entity.Store;
 import org.likelion.kkokio.global.base.exception.CustomException;
 import org.likelion.kkokio.global.base.exception.ErrorCode;
 import org.modelmapper.ModelMapper;
@@ -35,7 +34,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public ResponseEntity<MenuInfoResponseDTO> createMenuInfo(Long categoryId, MenuInfoRequestDTO menuInfoRequestDTO, MultipartFile image) {
-        Category category = categoryRepository.findbIdAndAdminAccountIdDeletedAtIsNULL(MemberId, categoryId)
+        Category category = categoryRepository.findbIdAndAdminAccountIdDeletedAtIsNullJoinStore(MemberId, categoryId)
                 .orElseThrow(()-> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
 
         Menu menu = modelMapper.map(menuInfoRequestDTO, Menu.class);
@@ -44,9 +43,9 @@ public class MenuServiceImpl implements MenuService {
         menu.updateCategoryInfo(category);
         menuRepository.save(menu);
 
-        CategoryInfoResponseDTO categoryInfoResponseDTO = modelMapper.map(category, CategoryInfoResponseDTO.class);
-        MenuInfoResponseDTO menuInfoResponseDTO = modelMapper.map(menu, MenuInfoResponseDTO.class);
-        modelMapper.map(categoryInfoResponseDTO, menuInfoResponseDTO);
+        MenuInfoResponseDTO menuInfoResponseDTO = modelMapper.map(category.getStore(), MenuInfoResponseDTO.class);
+        modelMapper.map(category, menuInfoResponseDTO);
+        modelMapper.map(menu, menuInfoResponseDTO);
         return ResponseEntity.ok(menuInfoResponseDTO);
     }
 
@@ -70,9 +69,8 @@ public class MenuServiceImpl implements MenuService {
 
         menuRepository.save(menu);
 
-        MenuInfoResponseDTO menuInfoResponseDTO = new MenuInfoResponseDTO();
-        CategoryInfoResponseDTO categoryInfoResponseDTO = modelMapper.map(menu.getCategory(), CategoryInfoResponseDTO.class);
-        modelMapper.map(categoryInfoResponseDTO, menuInfoResponseDTO);
+        MenuInfoResponseDTO menuInfoResponseDTO = modelMapper.map(menu.getCategory().getStore(), MenuInfoResponseDTO.class);
+        modelMapper.map(menu.getCategory(), menuInfoResponseDTO);
         modelMapper.map(menu, menuInfoResponseDTO);
         return ResponseEntity.ok(menuInfoResponseDTO);
     }
@@ -91,30 +89,14 @@ public class MenuServiceImpl implements MenuService {
     public ResponseEntity<Page<MenuInfoResponseDTO>> getMenuInfoStoreId(Long storeId, Pageable pageable) {
         return ResponseEntity.ok(
                 menuRepository.getMenuInfoStoreId(storeId, pageable)
-                        .map(tuple -> {
-                            Menu menu = (Menu) tuple[0];
-                            Category category = (Category) tuple[1];
-                            MenuInfoResponseDTO menuInfoResponseDTO = new MenuInfoResponseDTO();
-                            CategoryInfoResponseDTO categoryInfoResponseDTO = modelMapper.map(category, CategoryInfoResponseDTO.class);
-                            modelMapper.map(categoryInfoResponseDTO, menuInfoResponseDTO);
-                            modelMapper.map(menu, menuInfoResponseDTO);
-                            return menuInfoResponseDTO;
-                }));
+                        .map(this::MerageMenuInfoResponseDTO));
     }
 
     @Override
     public ResponseEntity<Page<MenuInfoResponseDTO>> getMenuInfoStoreIdAndcategoryId(Long storeId, Long categoryId, Pageable pageable) {
         return ResponseEntity.ok(
-                menuRepository.getMenuInfoStoreIdAndcategoryId(storeId, categoryId, pageable)
-                        .map(tuple -> {
-                            Menu menu = (Menu) tuple[0];
-                            Category category = (Category) tuple[1];
-                            MenuInfoResponseDTO menuInfoResponseDTO = new MenuInfoResponseDTO();
-                            CategoryInfoResponseDTO categoryInfoResponseDTO = modelMapper.map(category, CategoryInfoResponseDTO.class);
-                            modelMapper.map(categoryInfoResponseDTO, menuInfoResponseDTO);
-                            modelMapper.map(menu, menuInfoResponseDTO);
-                            return menuInfoResponseDTO;
-                        })
+                menuRepository.getMenuInfoStoreIdAndCategoryId(storeId, categoryId, pageable)
+                        .map(this::MerageMenuInfoResponseDTO)
         );
     }
 
@@ -126,10 +108,19 @@ public class MenuServiceImpl implements MenuService {
         menu.deletImage();
         menuRepository.save(menu);
 
-        MenuInfoResponseDTO menuInfoResponseDTO = new MenuInfoResponseDTO();
-        CategoryInfoResponseDTO categoryInfoResponseDTO = modelMapper.map(menu.getCategory(), CategoryInfoResponseDTO.class);
-        modelMapper.map(categoryInfoResponseDTO, menuInfoResponseDTO);
+        MenuInfoResponseDTO menuInfoResponseDTO = modelMapper.map(menu.getCategory().getStore(), MenuInfoResponseDTO.class);
+        modelMapper.map(menu.getCategory(), menuInfoResponseDTO);
         modelMapper.map(menu, menuInfoResponseDTO);
         return ResponseEntity.ok(menuInfoResponseDTO);
+    }
+
+    private MenuInfoResponseDTO MerageMenuInfoResponseDTO(Object[] tuple) {
+        Menu menu = (Menu) tuple[0];
+        Store store = (Store) tuple[1];
+        Category category = (Category) tuple[2];
+        MenuInfoResponseDTO menuInfoResponseDTO = modelMapper.map(store, MenuInfoResponseDTO.class);
+        modelMapper.map(category, menuInfoResponseDTO);
+        modelMapper.map(menu, menuInfoResponseDTO);
+        return menuInfoResponseDTO;
     }
 }
