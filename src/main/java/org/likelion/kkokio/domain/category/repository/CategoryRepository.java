@@ -24,4 +24,9 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             "WHERE a.deletedAt IS NULL AND s.deletedAt IS NULL AND c.deletedAt IS NULL " +
             "AND s.storeId = :storeId AND a.accountId = :accountId")
     Page<Object[]> findByStoreIdAndDeletedAt(Long storeId, Long accountId, Pageable pageable);
+
+    @Query("SELECT c, s FROM Category c JOIN c.store s JOIN s.adminAccount a " +
+            "WHERE a.deletedAt IS NULL AND s.deletedAt IS NULL AND c.deletedAt IS NULL AND" +
+            " a.accountId = :accountId AND c.categoryId = :categoryId")
+    Optional<Category> findbIdAndAdminAccountIdDeletedAtIsNullJoinStore(Long accountId, Long categoryId);
 }
