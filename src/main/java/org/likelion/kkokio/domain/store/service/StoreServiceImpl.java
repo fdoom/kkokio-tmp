@@ -28,7 +28,6 @@ public class StoreServiceImpl implements StoreService {
     private final StoreRepository storeRepository;
     private final ImageService imageService;
     private final ModelMapper modelMapper;
-    private final EntityManager entityManager;
 
     Long MemberId = 1L;
 
@@ -42,13 +41,9 @@ public class StoreServiceImpl implements StoreService {
             store.uploadImageUrl(imageService.uploadImage(image));
 
         store.connetionAdminAccount(adminAccount);
-        storeRepository.saveAndFlush(store);
-        entityManager.clear();
+        storeRepository.save(store);
 
-        return ResponseEntity.ok(
-                modelMapper.map(storeRepository.findById(store.getStoreId())
-                                .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND)),
-                        StoreInfoResponseDTO.class));
+        return ResponseEntity.ok(modelMapper.map(store, StoreInfoResponseDTO.class));
     }
 
     @Override
@@ -105,9 +100,6 @@ public class StoreServiceImpl implements StoreService {
         }
 
         storeRepository.save(store);
-        return ResponseEntity.ok(
-                modelMapper.map(storeRepository.findById(store.getStoreId())
-                                .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND)),
-                        StoreInfoResponseDTO.class));
+        return ResponseEntity.ok(modelMapper.map(store, StoreInfoResponseDTO.class));
     }
 }
