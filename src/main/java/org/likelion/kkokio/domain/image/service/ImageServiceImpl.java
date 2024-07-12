@@ -6,6 +6,8 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import lombok.RequiredArgsConstructor;
+import org.likelion.kkokio.global.base.exception.CustomException;
+import org.likelion.kkokio.global.base.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -40,7 +42,7 @@ public class ImageServiceImpl implements ImageService{
         try(WriteChannel writer = storage.writer(blobInfo)) {
             writer.write(ByteBuffer.wrap(image.getBytes()));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new CustomException(ErrorCode.GCP_IMAGE_UPLOAD_ERROR);
         }
         return "https://storage.googleapis.com/" + bucketName + "/" + filename;
     }

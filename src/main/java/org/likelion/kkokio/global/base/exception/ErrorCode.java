@@ -23,7 +23,12 @@ public enum ErrorCode {
 
     DUPLICATED_CATEGORYNAME(HttpStatus.CONFLICT, "카테고리 이름 정보가 중복되었습니다."),
 
-    MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "메뉴 정보를 찾지 못했습니다.")
+    MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "메뉴 정보를 찾지 못했습니다."),
+
+
+    // GPC CLOUD STORAGE
+    GCP_IMAGE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "해당 이미지는 GCP에 업로드가 불가능합니다."),
+
     ;
 
     private final HttpStatus status;
