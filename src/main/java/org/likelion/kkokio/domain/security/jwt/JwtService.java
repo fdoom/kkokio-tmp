@@ -34,8 +34,8 @@ public class JwtService {
         Date expiryDate = new Date(now.getTime() + expiration.toMillis());
 
         return Jwts.builder().subject(jwtConvertable.getUserId().toString())
-                .claim("username", jwtConvertable.getUsername())
-                .claim("role", jwtConvertable.getRole())
+                .claim(JwtConvertable.USER_NAME_KEY, jwtConvertable.getUsername())
+                .claim(JwtConvertable.ROLES_KEY, jwtConvertable.getRolesString())
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(secret)
@@ -57,8 +57,8 @@ public class JwtService {
             Claims payload = claims.getPayload();
             Long userId = Long.parseLong(payload.getSubject());
             String username = payload.get("username", String.class);
-            String role = payload.get("role", String.class);
-            jwtConvertable = new JwtConvertable.DefaultJwtConvertable(userId, username, role);
+            String rolesString = payload.get("role", String.class);
+            jwtConvertable = new JwtConvertable.DefaultJwtConvertable(userId, username, rolesString);
         } catch (Exception e) {
             log.debug("JWT has invalid payload: {}", e.getClass().getSimpleName());
             throw new InvalidJwtException(e);
