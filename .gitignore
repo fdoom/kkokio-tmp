@@ -1,3 +1,7 @@
+config.json
+server-ca.pem
+vars.env
+
 HELP.md
 .gradle
 build/

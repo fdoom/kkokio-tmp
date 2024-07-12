@@ -18,15 +18,12 @@ public class AdminAccount extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long accountId;
 
-    @Column(nullable = false)
-    @Size(max = 50)
+    @Column(nullable = false, length = 50, unique = true)
     private String accountLoginId;
 
-    @Column(nullable = false)
-    @Size(max = 254)
+    @Column(nullable = false, length = 254)
     private String accountLoginPassword;
 
-    @Column(nullable = false)
-    @Size(max = 50)
+    @Column(nullable = false, length = 50)
     private String accountName;
 }
