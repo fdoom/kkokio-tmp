@@ -5,7 +5,7 @@ import org.likelion.kkokio.domain.order.dto.request.OrderInfoRequestDTO;
 import org.likelion.kkokio.domain.order.dto.response.OrderInfoResponseDTO;
 import org.likelion.kkokio.domain.order.entity.Orders;
 import org.likelion.kkokio.domain.order.respository.OrdersRepository;
-import org.likelion.kkokio.domain.ordersMenu.dto.OrdersMenuDTO;
+import org.likelion.kkokio.domain.ordersMenu.dto.OrdersMenuDtoAndMenuDtoAndCategoryDto;
 import org.likelion.kkokio.domain.ordersMenu.service.OrdersMenuService;
 import org.likelion.kkokio.domain.store.entity.Store;
 import org.likelion.kkokio.domain.store.repository.StoreRepository;
@@ -35,9 +35,9 @@ public class OrderServiceImpl implements OrderService{
                 .build();
         ordersRepository.save(orders);
 
-        List<OrdersMenuDTO> ordersMenuDTOList = ordersMenuService.createOrderInfo(orders.getOrderId(), orderInfoRequestDTOList, storeId);
+        List<OrdersMenuDtoAndMenuDtoAndCategoryDto> ordersMenuDtoAndMenuDtoAndCategoryDtoList = ordersMenuService.createOrderInfo(orders.getOrderId(), orderInfoRequestDTOList, storeId);
         OrderInfoResponseDTO orderInfoResponseDTO = OrderInfoResponseDTO.builder()
-                .ordersMenuDTOList(ordersMenuDTOList)
+                .ordersMenuDtoAndMenuDtoAndCategoryDtoList(ordersMenuDtoAndMenuDtoAndCategoryDtoList)
                 .build();
         modelMapper.map(orders, orderInfoResponseDTO);
         return ResponseEntity.ok(orderInfoResponseDTO);
