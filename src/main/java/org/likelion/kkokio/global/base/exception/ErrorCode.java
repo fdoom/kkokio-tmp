@@ -29,7 +29,8 @@ public enum ErrorCode {
     // GPC CLOUD STORAGE
     GCP_IMAGE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "해당 이미지는 GCP에 업로드가 불가능합니다."),
 
-    ;
+    // ORDER
+    ORDER_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "주문 과정에서 오류가 발생했습니다.");
 
     private final HttpStatus status;
     private final String message;

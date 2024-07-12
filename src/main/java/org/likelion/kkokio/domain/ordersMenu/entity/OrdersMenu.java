@@ -1,13 +1,20 @@
 package org.likelion.kkokio.domain.ordersMenu.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.likelion.kkokio.domain.menu.entity.Menu;
 import org.likelion.kkokio.domain.order.entity.Orders;
 import org.likelion.kkokio.domain.ordersMenu.entity.id.OrderMenuId;
 import org.springframework.data.domain.Persistable;
 
-import java.awt.*;
 
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 public class OrdersMenu implements Persistable<OrderMenuId> {
     @EmbeddedId

@@ -1,11 +1,19 @@
 package org.likelion.kkokio.domain.order.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.likelion.kkokio.domain.store.entity.Store;
 import org.likelion.kkokio.global.base.entity.BaseEntity;
 
 import java.time.LocalDateTime;
 
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @AttributeOverrides({
         @AttributeOverride(name = "createdAt", column = @Column(name = "order_create_at", nullable = false, updatable = false)),
