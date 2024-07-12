@@ -25,5 +25,6 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
             "AND s.storeId = :storeId AND c.categoryId = :categoryId")
     Page<Object[]> getMenuInfoStoreIdAndCategoryId(Long storeId, Long categoryId, Pageable pageable);
 
-
+    @Query("SELECT m, c, s FROM Menu m JOIN m.category c JOIN c.store s WHERE s.deletedAt IS NULL AND c.deletedAt IS NULL AND m.deletedAt IS NULL AND m.menuId = :menuId AND s.storeId = :storeId")
+    Optional<Menu> findByMenuIdAndStoreIdAndDeletedAtIsNull(Long menuId, Long storeId);
 }

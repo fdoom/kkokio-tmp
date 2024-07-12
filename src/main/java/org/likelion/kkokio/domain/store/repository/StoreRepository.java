@@ -19,4 +19,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     Optional<Store> findByStoreIdAndAccountIdAndDeletedAtIsNull(Long storeId, Long accountId);
 
     Optional<Store> findByAdminAccountAndCategoryAndDeletedAtIsNull(AdminAccount adminAccount, Category category);
+
+    Optional<Store> findByStoreIdAndDeletedAtIsNull(Long storeId);
 }
