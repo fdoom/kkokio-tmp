@@ -1,6 +1,5 @@
 package org.likelion.kkokio.domain.category.service;
 
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.likelion.kkokio.domain.adminAccount.entity.AdminAccount;
 import org.likelion.kkokio.domain.adminAccount.repository.AdminAccountRepository;

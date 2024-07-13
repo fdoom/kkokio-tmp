@@ -11,7 +11,6 @@ import org.likelion.kkokio.domain.menu.dto.request.MenuInfoRequestDTO;
 import org.likelion.kkokio.domain.menu.dto.response.MenuInfoResponseDTO;
 import org.likelion.kkokio.domain.menu.entity.Menu;
 import org.likelion.kkokio.domain.menu.repository.MenuRepository;
-import org.likelion.kkokio.domain.store.entity.Store;
 import org.likelion.kkokio.global.base.exception.CustomException;
 import org.likelion.kkokio.global.base.exception.ErrorCode;
 import org.modelmapper.ModelMapper;
