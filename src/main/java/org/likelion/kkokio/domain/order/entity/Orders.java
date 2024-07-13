@@ -31,4 +31,16 @@ public class Orders extends BaseEntity {
 
     private LocalDateTime cookingStartedAt;
     private LocalDateTime orderFinishedAt;
+
+    public void updatedInfo() {
+        super.updatedInfo();
+    }
+
+    public void updateCookOrderInfo() {
+        this.cookingStartedAt = LocalDateTime.now();
+    }
+
+    public void updateFinishedOrderInfo() {
+        this.orderFinishedAt = LocalDateTime.now();
+    }
 }

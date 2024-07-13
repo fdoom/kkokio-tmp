@@ -24,7 +24,7 @@ public enum ErrorCode {
     // CATEGORY
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "카테고리 정보가 존재하지 않습니다."),
 
-    DUPLICATED_CATEGORYNAME(HttpStatus.CONFLICT, "카테고리 이름 정보가 중복되었습니다."),
+    DUPLICATED_CATEGORYNAME(HttpStatus.CONFLICT, "카테고리 이름 정복가 중복되었습니다."),
 
     MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "메뉴 정보를 찾지 못했습니다."),
 
@@ -33,7 +33,11 @@ public enum ErrorCode {
     GCP_IMAGE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "해당 이미지는 GCP에 업로드가 불가능합니다."),
 
     // ORDER
-    ORDER_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "주문 과정에서 오류가 발생했습니다.");
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "주문 정보를 찾을 수 없습니다."),
+
+    ORDER_NOT_FOUND_OR_NOT_UPDATED(HttpStatus.CONFLICT, "주문 정보가 존재하지 않거나 변경이 불가능합니다.")
+
+    ;
 
     private final HttpStatus status;
     private final String message;
