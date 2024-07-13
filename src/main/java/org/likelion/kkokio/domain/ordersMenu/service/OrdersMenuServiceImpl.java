@@ -12,7 +12,6 @@ import org.likelion.kkokio.domain.ordersMenu.dto.OrdersMenuDtoAndMenuDtoAndCateg
 import org.likelion.kkokio.domain.ordersMenu.entity.OrdersMenu;
 import org.likelion.kkokio.domain.ordersMenu.entity.id.OrderMenuId;
 import org.likelion.kkokio.domain.ordersMenu.repository.OrdersMenuRepository;
-import org.likelion.kkokio.domain.store.repository.StoreRepository;
 import org.likelion.kkokio.global.base.exception.CustomException;
 import org.likelion.kkokio.global.base.exception.ErrorCode;
 import org.modelmapper.ModelMapper;
@@ -29,7 +28,6 @@ public class OrdersMenuServiceImpl implements OrdersMenuService {
     private final ModelMapper modelMapper;
     private final OrdersRepository ordersRepository;
     private final OrdersMenuRepository ordersMenuRepository;
-    private final StoreRepository storeRepository;
 
     @Override
     public List<OrdersMenuDtoAndMenuDtoAndCategoryDto> createOrderInfo(Long orderId, List<OrderInfoRequestDTO> orderInfoRequestDTOList, Long storeId) {
@@ -56,17 +54,7 @@ public class OrdersMenuServiceImpl implements OrdersMenuService {
                 }).toList()
         );
 
-        return ordersMenuRepository.findAllByOrderId(orderId).stream().map(ordersMenu -> {
-            MenuDtoAndCategoryDto menuDtoAndCategoryDto = MenuDtoAndCategoryDto.builder()
-                    .categoryDtoOnly(modelMapper.map(ordersMenu.getMenu().getCategory(), CategoryDtoOnly.class))
-                    .build();
-            modelMapper.map(ordersMenu.getMenu(), menuDtoAndCategoryDto);
-
-            return OrdersMenuDtoAndMenuDtoAndCategoryDto.builder()
-                    .menuDtoAndCategoryDto(menuDtoAndCategoryDto)
-                    .amount(ordersMenu.getAmount())
-                    .build();
-        }).toList();
+        return getOrdersMenuDtoAndMenuDtoAndCategoryDtos(orderId);
     }
 
 
@@ -95,6 +83,15 @@ public class OrdersMenuServiceImpl implements OrdersMenuService {
                             .build();
                 }).toList()
         );
+        return getOrdersMenuDtoAndMenuDtoAndCategoryDtos(orderId);
+    }
+
+    @Override
+    public List<OrdersMenuDtoAndMenuDtoAndCategoryDto> getOrdersMenuInfoList(Long orderId) {
+        return getOrdersMenuDtoAndMenuDtoAndCategoryDtos(orderId);
+    }
+
+    private List<OrdersMenuDtoAndMenuDtoAndCategoryDto> getOrdersMenuDtoAndMenuDtoAndCategoryDtos(Long orderId) {
         return ordersMenuRepository.findAllByOrderId(orderId).stream().map(ordersMenu -> {
             MenuDtoAndCategoryDto menuDtoAndCategoryDto = MenuDtoAndCategoryDto.builder()
                     .categoryDtoOnly(modelMapper.map(ordersMenu.getMenu().getCategory(), CategoryDtoOnly.class))

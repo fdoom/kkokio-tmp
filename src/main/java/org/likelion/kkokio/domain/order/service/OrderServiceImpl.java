@@ -13,6 +13,8 @@ import org.likelion.kkokio.domain.store.repository.StoreRepository;
 import org.likelion.kkokio.global.base.exception.CustomException;
 import org.likelion.kkokio.global.base.exception.ErrorCode;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -91,5 +93,48 @@ public class OrderServiceImpl implements OrderService{
         orders.updateFinishedOrderInfo();
         ordersRepository.save(orders);
         return ResponseEntity.ok(modelMapper.map(orders, OrderTimeResponseDTO.class));
+    }
+
+    @Override
+    public ResponseEntity<Page<OrderInfoResponseDTO>> getOrderInfoByStoreIdAndCategoryId(Long storeId, Long categoryId, Pageable pageable) {
+        return ResponseEntity.ok(
+                ordersRepository.findByStoreIdAndCategoryIdAndDeletedAtIsNull(storeId, categoryId, pageable)
+                        .map( orders -> {
+                            List<OrdersMenuDtoAndMenuDtoAndCategoryDto> ordersMenuDtoAndMenuDtoAndCategoryDtoList =
+                                    ordersMenuService.getOrdersMenuInfoList(orders.getOrderId());
+                            OrderInfoResponseDTO orderInfoResponseDTO = OrderInfoResponseDTO.builder()
+                                    .ordersMenuDtoAndMenuDtoAndCategoryDtoList(ordersMenuDtoAndMenuDtoAndCategoryDtoList)
+                                    .build();
+                            modelMapper.map(orders, orderInfoResponseDTO);
+                            return orderInfoResponseDTO;
+                        }));
+    }
+
+    @Override
+    public ResponseEntity<Page<OrderInfoResponseDTO>> getOrderInfoByStoreId(Long storeId, Pageable pageable) {
+        return ResponseEntity.ok(
+                ordersRepository.findByStoreIdAndDeletedAtIsNull(storeId, pageable)
+                        .map(orders -> {
+                            List<OrdersMenuDtoAndMenuDtoAndCategoryDto> ordersMenuDtoAndMenuDtoAndCategoryDtoList =
+                                    ordersMenuService.getOrdersMenuInfoList(orders.getOrderId());
+                            OrderInfoResponseDTO orderInfoResponseDTO = OrderInfoResponseDTO.builder()
+                                    .ordersMenuDtoAndMenuDtoAndCategoryDtoList(ordersMenuDtoAndMenuDtoAndCategoryDtoList)
+                                    .build();
+                            modelMapper.map(orders, orderInfoResponseDTO);
+                            return orderInfoResponseDTO;
+                        }));
+    }
+
+    @Override
+    public ResponseEntity<OrderInfoResponseDTO> getOrderInfoByOrderId(Long orderId) {
+        Orders orders = ordersRepository.findByOrderIdAndDeletedAtIsNull(orderId)
+                .orElseThrow(()-> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+        List<OrdersMenuDtoAndMenuDtoAndCategoryDto> ordersMenuDtoAndMenuDtoAndCategoryDtoList =
+                ordersMenuService.getOrdersMenuInfoList(orders.getOrderId());
+        OrderInfoResponseDTO orderInfoResponseDTO = OrderInfoResponseDTO.builder()
+                .ordersMenuDtoAndMenuDtoAndCategoryDtoList(ordersMenuDtoAndMenuDtoAndCategoryDtoList)
+                .build();
+        modelMapper.map(orders, orderInfoResponseDTO);
+        return ResponseEntity.ok(orderInfoResponseDTO);
     }
 }
