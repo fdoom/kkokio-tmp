@@ -26,4 +26,8 @@ public class BaseEntity {
     public void deletedInfo() {
         deletedAt = LocalDateTime.now();
     }
+
+    protected void updatedInfo() {
+        updatedAt = LocalDateTime.now();
+    }
 }

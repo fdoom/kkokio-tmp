@@ -17,9 +17,11 @@ import org.likelion.kkokio.global.base.exception.CustomException;
 import org.likelion.kkokio.global.base.exception.ErrorCode;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class OrdersMenuServiceImpl implements OrdersMenuService {
@@ -54,6 +56,45 @@ public class OrdersMenuServiceImpl implements OrdersMenuService {
                 }).toList()
         );
 
+        return ordersMenuRepository.findAllByOrderId(orderId).stream().map(ordersMenu -> {
+            MenuDtoAndCategoryDto menuDtoAndCategoryDto = MenuDtoAndCategoryDto.builder()
+                    .categoryDtoOnly(modelMapper.map(ordersMenu.getMenu().getCategory(), CategoryDtoOnly.class))
+                    .build();
+            modelMapper.map(ordersMenu.getMenu(), menuDtoAndCategoryDto);
+
+            return OrdersMenuDtoAndMenuDtoAndCategoryDto.builder()
+                    .menuDtoAndCategoryDto(menuDtoAndCategoryDto)
+                    .amount(ordersMenu.getAmount())
+                    .build();
+        }).toList();
+    }
+
+
+    @Override
+    public List<OrdersMenuDtoAndMenuDtoAndCategoryDto> updateOrderInfo(Long orderId, List<OrderInfoRequestDTO> orderInfoRequestDTOList) {
+        ordersMenuRepository.deleteAllByOrderId(orderId);
+
+        Orders orders = modelMapper.map(ordersRepository.findByOrderIdAndDeletedAtIsNull(orderId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND)), Orders.class);
+        ordersMenuRepository.saveAll(
+                orderInfoRequestDTOList.stream().map(menuInfo -> {
+                    Menu menu = modelMapper.map(menuRepository.findByMenuIdAndStoreIdAndDeletedAtIsNull(menuInfo.getMenuId(), orders.getStore().getStoreId())
+                                    .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND)),
+                            Menu.class);
+
+                    OrderMenuId orderMenuId = OrderMenuId.builder()
+                            .menu_id(menuInfo.getMenuId())
+                            .order_id(orderId)
+                            .build();
+
+                    return OrdersMenu.builder()
+                            .id(orderMenuId)
+                            .orders(orders)
+                            .menu(menu)
+                            .amount(menuInfo.getAmount())
+                            .build();
+                }).toList()
+        );
         return ordersMenuRepository.findAllByOrderId(orderId).stream().map(ordersMenu -> {
             MenuDtoAndCategoryDto menuDtoAndCategoryDto = MenuDtoAndCategoryDto.builder()
                     .categoryDtoOnly(modelMapper.map(ordersMenu.getMenu().getCategory(), CategoryDtoOnly.class))

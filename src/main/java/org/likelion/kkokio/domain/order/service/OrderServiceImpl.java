@@ -2,6 +2,7 @@ package org.likelion.kkokio.domain.order.service;
 
 import lombok.RequiredArgsConstructor;
 import org.likelion.kkokio.domain.order.dto.request.OrderInfoRequestDTO;
+import org.likelion.kkokio.domain.order.dto.response.OrderTimeResponseDTO;
 import org.likelion.kkokio.domain.order.dto.response.OrderInfoResponseDTO;
 import org.likelion.kkokio.domain.order.entity.Orders;
 import org.likelion.kkokio.domain.order.respository.OrdersRepository;
@@ -14,11 +15,13 @@ import org.likelion.kkokio.global.base.exception.ErrorCode;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class OrderServiceImpl implements OrderService{
     private final OrdersRepository ordersRepository;
     private final StoreRepository storeRepository;
@@ -41,5 +44,52 @@ public class OrderServiceImpl implements OrderService{
                 .build();
         modelMapper.map(orders, orderInfoResponseDTO);
         return ResponseEntity.ok(orderInfoResponseDTO);
+    }
+
+
+    private Long MemberId = 1L;
+
+    @Override
+    public ResponseEntity<OrderInfoResponseDTO> updateOrderInfo(Long orderId, List<OrderInfoRequestDTO> orderInfoRequestDTOList) {
+        Orders orders = ordersRepository.findByOrderIdAndAdminAccountIdAndDeletedAtIsNullAndCookingStartedAtIsNull(orderId, MemberId)
+                .orElseThrow(()-> new CustomException(ErrorCode.ORDER_NOT_FOUND_OR_NOT_UPDATED));
+
+        List<OrdersMenuDtoAndMenuDtoAndCategoryDto> ordersMenuDtoAndMenuDtoAndCategoryDtoList = ordersMenuService.updateOrderInfo(orderId, orderInfoRequestDTOList);
+        orders.updatedInfo();
+        ordersRepository.save(orders);
+
+        OrderInfoResponseDTO orderInfoResponseDTO = OrderInfoResponseDTO.builder()
+                .ordersMenuDtoAndMenuDtoAndCategoryDtoList(ordersMenuDtoAndMenuDtoAndCategoryDtoList)
+                .build();
+        modelMapper.map(orders, orderInfoResponseDTO);
+        return ResponseEntity.ok(orderInfoResponseDTO);
+    }
+
+    @Override
+    public ResponseEntity<OrderTimeResponseDTO> cookOrderInfo(Long orderId) {
+        Orders orders = ordersRepository.findByOrderIdAndAdminAccountIdAndDeletedAtIsNullAndCookingStartedAtIsNull(orderId, MemberId)
+                .orElseThrow(()-> new CustomException(ErrorCode.ORDER_NOT_FOUND_OR_NOT_UPDATED));
+
+        orders.updateCookOrderInfo();
+        ordersRepository.save(orders);
+        return ResponseEntity.ok(modelMapper.map(orders, OrderTimeResponseDTO.class));
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteOrderInfo(Long orderId) {
+        Orders orders = ordersRepository.findByOrderIdAndAdminAccountIdAndDeletedAtIsNullAndCookingStartedAtIsNull(orderId, MemberId)
+                .orElseThrow(()-> new CustomException(ErrorCode.ORDER_NOT_FOUND_OR_NOT_UPDATED));
+        orders.deletedInfo();
+        ordersRepository.save(orders);
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<OrderTimeResponseDTO> finishOrderInfo(Long orderId) {
+        Orders orders = ordersRepository.findByOderIdAndAdminAccountIdAndDeletedAtIsNullAndOrderFinishedAtIsNull(orderId, MemberId)
+                .orElseThrow(()-> new CustomException(ErrorCode.ORDER_NOT_FOUND_OR_NOT_UPDATED));
+        orders.updateFinishedOrderInfo();
+        ordersRepository.save(orders);
+        return ResponseEntity.ok(modelMapper.map(orders, OrderTimeResponseDTO.class));
     }
 }
