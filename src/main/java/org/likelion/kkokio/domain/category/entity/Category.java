@@ -2,7 +2,6 @@ package org.likelion.kkokio.domain.category.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import org.likelion.kkokio.domain.adminAccount.entity.AdminAccount;
 import org.likelion.kkokio.domain.menu.entity.Menu;
 import org.likelion.kkokio.domain.store.entity.Store;
 import org.likelion.kkokio.global.base.entity.BaseEntity;

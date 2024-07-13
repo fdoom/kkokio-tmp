@@ -1,7 +1,6 @@
 package org.likelion.kkokio.domain.ordersMenu.service;
 
 import org.likelion.kkokio.domain.order.dto.request.OrderInfoRequestDTO;
-import org.likelion.kkokio.domain.order.entity.Orders;
 import org.likelion.kkokio.domain.ordersMenu.dto.OrdersMenuDtoAndMenuDtoAndCategoryDto;
 
 import java.util.List;
