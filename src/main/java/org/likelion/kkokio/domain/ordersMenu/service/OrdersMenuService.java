@@ -9,4 +9,6 @@ public interface OrdersMenuService {
     List<OrdersMenuDtoAndMenuDtoAndCategoryDto> createOrderInfo(Long orderId, List<OrderInfoRequestDTO> orderInfoRequestDTOList, Long storeId);
 
     List<OrdersMenuDtoAndMenuDtoAndCategoryDto> updateOrderInfo(Long orderId, List<OrderInfoRequestDTO> orderInfoRequestDTOList);
+
+    List<OrdersMenuDtoAndMenuDtoAndCategoryDto> getOrdersMenuInfoList(Long orderId);
 }

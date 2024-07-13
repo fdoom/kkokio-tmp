@@ -2,6 +2,7 @@ package org.likelion.kkokio.domain.order.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,6 +14,9 @@ import org.likelion.kkokio.domain.order.dto.response.OrderTimeResponseDTO;
 import org.likelion.kkokio.domain.order.dto.response.OrderInfoResponseDTO;
 import org.likelion.kkokio.domain.order.service.OrderService;
 import org.likelion.kkokio.global.base.exception.ErrorResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -73,5 +77,37 @@ public class OrderController {
     @Parameter(name = "orderId", description = "주문 ID값")
     public ResponseEntity<OrderTimeResponseDTO> finishOrderInfo(@PathVariable("orderId") Long orderId) {
         return orderService.finishOrderInfo(orderId);
+    }
+
+    @GetMapping("/info/{orderId}")
+    @Operation(summary = "주문 조회", description = "특정 주문 정보 조회")
+    @Parameter(name = "orderId", description = "주문 ID값")
+    public ResponseEntity<OrderInfoResponseDTO> getOrderInfoByOrderId(@PathVariable("orderId") Long orderId) {
+        return orderService.getOrderInfoByOrderId(orderId);
+    }
+
+    @GetMapping("/info/store/{storeId}")
+    @Operation(summary = "주문 조회", description = "가게 ID를 기반으로 주문 정보 조회")
+    @Parameters(value = {
+            @Parameter(name = "storeId", description = "가게 ID값"),
+            @Parameter(name = "pageable", description = "페이징 정보, 기본설정: orderId 값을 기준으로 오름차순")
+    })
+    public ResponseEntity<Page<OrderInfoResponseDTO>> getOrderInfoByStoreId(@PathVariable Long storeId, @PageableDefault Pageable pageable) {
+        return orderService.getOrderInfoByStoreId(storeId, pageable);
+    }
+
+    @GetMapping("/info/store/{storeId}/category/{categoryId}")
+    @Operation(summary = "주문 조회", description = "가게 ID와 카테고리 ID값을 기반으로 주문 정보 조회")
+    @Parameters(value = {
+            @Parameter(name = "storeId", description = "가게 ID값"),
+            @Parameter(name = "categoryId", description = "카테고리 ID값"),
+            @Parameter(name = "pageable", description = "페이징 정보, 기본설정: orderId 값을 기준으로 오름차순")
+    })
+    public ResponseEntity<Page<OrderInfoResponseDTO>> getOrderInfoByStoreIdAndCategoryId(
+            @PathVariable("storeId") Long storeId,
+            @PathVariable("categoryId") Long categoryId,
+            @PageableDefault(sort = "orderId") Pageable pageable
+    ) {
+        return orderService.getOrderInfoByStoreIdAndCategoryId(storeId, categoryId, pageable);
     }
 }
