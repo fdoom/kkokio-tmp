@@ -14,5 +14,7 @@ public interface CategoryService {
 
     ResponseEntity<Void> deleteCategoryInfo(Long categoryId);
 
-    ResponseEntity<Page<CategoryInfoResponseDTO>> getCategoryInfo(Long storeId, Pageable pageable);
+    ResponseEntity<Page<CategoryInfoResponseDTO>> getCategoryInfoPage(Long storeId, Pageable pageable);
+
+    ResponseEntity<CategoryInfoResponseDTO> getCategoryInfo(Long categoryId);
 }
