@@ -86,6 +86,13 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
+    public ResponseEntity<StoreInfoResponseDTO> getStoreInfo(Long storeId) {
+        Store store = storeRepository.findByStoreIdAndDeletedAtIsNull(storeId)
+                .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
+        return ResponseEntity.ok(modelMapper.map(store, StoreInfoResponseDTO.class));
+    }
+
+    @Override
     public ResponseEntity<StoreInfoResponseDTO> updateStoreInfo(MultipartFile image, StoreInfoRequestDTO storeInfoRequestDTO, Long storeId) {
         AdminAccount adminAccount = adminAccountRepository.findById(MemberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
