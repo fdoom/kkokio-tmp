@@ -18,4 +18,6 @@ public interface StoreService {
     ResponseEntity<Void> deleteStoreInfo(Long storeId);
 
     ResponseEntity<StoreInfoResponseDTO> deleteImage(Long storedId);
+
+    ResponseEntity<StoreInfoResponseDTO> getStoreInfo(Long storeId);
 }

@@ -2,6 +2,7 @@ package org.likelion.kkokio.global.base.exception;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import org.apache.tomcat.util.http.fileupload.impl.InvalidContentTypeException;
 import org.hibernate.query.sqm.PathElementException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +51,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(PathElementException.class)
     public ResponseEntity<ErrorResponse> handlePathElementException(PathElementException e) {
+        String errorMessage = e.getMessage();
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(HttpStatus.BAD_REQUEST, errorMessage));
+    }
+
+    @ExceptionHandler(InvalidContentTypeException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidContentTypeException(InvalidContentTypeException e) {
         String errorMessage = e.getMessage();
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
