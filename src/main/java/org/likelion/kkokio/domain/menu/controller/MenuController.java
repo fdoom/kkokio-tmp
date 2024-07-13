@@ -97,4 +97,11 @@ public class MenuController {
     public ResponseEntity<MenuInfoResponseDTO> deleteImage(@PathVariable Long menuId) {
         return menuService.deleteImage(menuId);
     }
+
+    @GetMapping("/info/{menuId}")
+    @Operation(summary = "특정 메뉴 조회", description = "특정 메뉴 정보 조회")
+    @Parameter(name = "menuId", description = "메뉴 ID값")
+    public ResponseEntity<MenuInfoResponseDTO> getMenuInfo(@PathVariable Long menuId) {
+        return menuService.getMenuInfoMenuId(menuId);
+    }
 }

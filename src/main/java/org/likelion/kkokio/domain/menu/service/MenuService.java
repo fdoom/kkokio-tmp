@@ -22,4 +22,6 @@ public interface MenuService {
     ResponseEntity<Page<MenuInfoResponseDTO>> getMenuInfoStoreIdAndcategoryId(Long storeId, Long categoryId, Pageable pageable);
 
     ResponseEntity<MenuInfoResponseDTO> deleteImage(Long menuId);
+
+    ResponseEntity<MenuInfoResponseDTO> getMenuInfoMenuId(Long menuId);
 }

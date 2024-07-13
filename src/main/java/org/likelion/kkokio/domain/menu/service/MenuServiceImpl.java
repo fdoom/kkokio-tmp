@@ -3,6 +3,7 @@ package org.likelion.kkokio.domain.menu.service;
 
 import lombok.RequiredArgsConstructor;
 import org.likelion.kkokio.domain.category.dto.another.CategoryDtoOnly;
+import org.likelion.kkokio.domain.category.dto.response.CategoryInfoResponseDTO;
 import org.likelion.kkokio.domain.category.entity.Category;
 import org.likelion.kkokio.domain.category.repository.CategoryRepository;
 import org.likelion.kkokio.domain.image.service.ImageService;
@@ -114,6 +115,19 @@ public class MenuServiceImpl implements MenuService {
 
         MenuInfoResponseDTO menuInfoResponseDTO = MenuInfoResponseDTO.builder()
                 .categoryDtoOnly(modelMapper.map(menu.getCategory(), CategoryDtoOnly.class))
+                .build();
+        modelMapper.map(menu, menuInfoResponseDTO);
+        return ResponseEntity.ok(menuInfoResponseDTO);
+    }
+
+    @Override
+    public ResponseEntity<MenuInfoResponseDTO> getMenuInfoMenuId(Long menuId) {
+        Menu menu = menuRepository.findMenuAndCategoryByMenuIdAndDeletedAtIsNull(menuId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
+        CategoryDtoOnly categoryDtoOnly = modelMapper.map(menu.getCategory(), CategoryDtoOnly.class);
+
+        MenuInfoResponseDTO menuInfoResponseDTO = MenuInfoResponseDTO.builder()
+                .categoryDtoOnly(categoryDtoOnly)
                 .build();
         modelMapper.map(menu, menuInfoResponseDTO);
         return ResponseEntity.ok(menuInfoResponseDTO);
