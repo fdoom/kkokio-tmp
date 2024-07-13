@@ -81,7 +81,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public ResponseEntity<Page<CategoryInfoResponseDTO>> getCategoryInfo(Long storeId, Pageable pageable) {
+    public ResponseEntity<Page<CategoryInfoResponseDTO>> getCategoryInfoPage(Long storeId, Pageable pageable) {
         return ResponseEntity.ok(
                 categoryRepository.findByStoreIdAndDeletedAt(storeId, MemberId, pageable)
                         .map(tuple -> {
@@ -93,5 +93,14 @@ public class CategoryServiceImpl implements CategoryService {
                             modelMapper.map(category, categoryInfoResponseDTO);
                             return categoryInfoResponseDTO;
                         }));
+    }
+
+    @Override
+    public ResponseEntity<CategoryInfoResponseDTO> getCategoryInfo(Long categoryId) {
+        return ResponseEntity.ok(
+                modelMapper.map(categoryRepository.findByCategoryIdAndDeletedAtIsNull(categoryId)
+                        .orElseThrow(()-> new CustomException(ErrorCode.CATEGORY_NOT_FOUND)),
+                        CategoryInfoResponseDTO.class)
+        );
     }
 }

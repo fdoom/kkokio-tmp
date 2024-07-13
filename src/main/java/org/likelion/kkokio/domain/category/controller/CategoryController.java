@@ -67,13 +67,20 @@ public class CategoryController {
         return categoryService.deleteCategoryInfo(categoryId);
     }
 
-    @GetMapping("/info/{storeId}")
-    @Operation(summary = "카테고리 정보 조회", description = "등록된 카테고리 정보 조회")
+    @GetMapping("/info/store/{storeId}")
+    @Operation(summary = "카테고리 정보 조회", description = "가게 ID값 기반으로 등록된 카테고리 정보 조회")
     @Parameters (value = {
             @Parameter(name = "storeId", description = "가게에 대한 ID값"),
             @Parameter(name = "pageable", description = "페이징 정보, 기본설정: categoryId 값을 기준으로 오름차순 정렬")
     })
     public ResponseEntity<Page<CategoryInfoResponseDTO>> getCategoryInfo(@PathVariable Long storeId, @PageableDefault(sort = "categoryId") Pageable pageable) {
-        return categoryService.getCategoryInfo(storeId, pageable);
+        return categoryService.getCategoryInfoPage(storeId, pageable);
+    }
+
+    @GetMapping("/info/{categoryId}")
+    @Operation(summary = "특정 카테고리 정보 조회", description = "특정 카테고리 정보 조회")
+    @Parameter(name = "categoryId", description = "카테고리 ID값")
+    public ResponseEntity<CategoryInfoResponseDTO> getCategoryInfo(@PathVariable Long categoryId) {
+        return categoryService.getCategoryInfo(categoryId);
     }
 }

@@ -29,4 +29,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             "WHERE a.deletedAt IS NULL AND s.deletedAt IS NULL AND c.deletedAt IS NULL AND" +
             " a.accountId = :accountId AND c.categoryId = :categoryId")
     Optional<Category> findbIdAndAdminAccountIdDeletedAtIsNullJoinStore(Long accountId, Long categoryId);
+
+    Optional<Category> findByCategoryIdAndDeletedAtIsNull(Long categoryId);
 }
