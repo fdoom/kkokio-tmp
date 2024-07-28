@@ -16,3 +16,29 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+
+  cloud:
+    gateway:
+      mvc:
+        routes:
+          - id: whisper-1
+            uri: https://api.openai.com
+            predicates:
+              - Path=/v1/audio/*
+            filters:
+              - SetRequestHeader=Authorization, Bearer ${OPEN_AI_API_KEY}
+              - SetRequestHeader=OpenAI-Project, ${OPEN_AI_PROJECT_ID}
+          - id: assistants
+            uri: https://api.openai.com
+            predicates:
+              - Path=/v1/assistants/**
+            filters:
+              - SetRequestHeader=Authorization, Bearer ${OPEN_AI_API_KEY}
+              - SetRequestHeader=OpenAI-Project, ${OPEN_AI_PROJECT_ID}
+          - id: threads
+            uri: https://api.openai.com
+            predicates:
+              - Path=/v1/threads/**
+            filters:
+              - SetRequestHeader=Authorization, Bearer ${OPEN_AI_API_KEY}
+              - SetRequestHeader=OpenAI-Project, ${OPEN_AI_PROJECT_ID}
