@@ -13,6 +13,7 @@ public enum ErrorCode {
 
     // ACCOUNT
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자가 존재하지 않습니다."),
+    DUPLICATED_USER(HttpStatus.CONFLICT, "이미 존재하는 사용자입니다."),
 
     // STORE
     STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "식당 정보가 존재하지 않습니다."),

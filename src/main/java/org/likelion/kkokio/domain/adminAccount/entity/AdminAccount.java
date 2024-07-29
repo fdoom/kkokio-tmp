@@ -2,12 +2,15 @@ package org.likelion.kkokio.domain.adminAccount.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
+import lombok.*;
 import org.likelion.kkokio.global.base.entity.BaseEntity;
 
 @Getter
 @Entity
 @Table(name = "admin_account")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @AttributeOverrides({
         @AttributeOverride(name = "createdAt", column = @Column(name = "account_create_at", nullable = false, updatable = false)),
         @AttributeOverride(name = "updatedAt", column = @Column(name = "account_update_at", nullable = false)),
@@ -26,4 +29,14 @@ public class AdminAccount extends BaseEntity {
 
     @Column(nullable = false, length = 50)
     private String accountName;
+
+    @Builder(builderMethodName = "createNewBuilder")
+    public static AdminAccount createNew(String accountLoginId, String accountLoginPassword, String accountName) {
+        return AdminAccount.builder()
+                .accountLoginId(accountLoginId)
+                .accountLoginPassword(accountLoginPassword)
+                .accountName(accountName)
+                .build();
+    }
+
 }
