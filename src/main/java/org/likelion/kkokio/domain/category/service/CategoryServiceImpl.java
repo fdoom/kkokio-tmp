@@ -97,10 +97,13 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ResponseEntity<CategoryInfoResponseDTO> getCategoryInfo(Long categoryId) {
-        return ResponseEntity.ok(
-                modelMapper.map(categoryRepository.findByCategoryIdAndDeletedAtIsNull(categoryId)
-                        .orElseThrow(()-> new CustomException(ErrorCode.CATEGORY_NOT_FOUND)),
-                        CategoryInfoResponseDTO.class)
-        );
+        Category category = categoryRepository.findByCategoryIdAndDeletedAtIsNull(categoryId)
+                .orElseThrow(()-> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
+
+        CategoryInfoResponseDTO categoryInfoResponseDTO = CategoryInfoResponseDTO.builder()
+                .storeInfoResponseDTO(modelMapper.map(category.getStore(), StoreInfoResponseDTO.class))
+                .build();
+        modelMapper.map(category, categoryInfoResponseDTO);
+        return ResponseEntity.ok(categoryInfoResponseDTO);
     }
 }
