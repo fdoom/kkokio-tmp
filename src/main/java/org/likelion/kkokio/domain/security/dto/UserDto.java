@@ -1,4 +1,4 @@
-package org.likelion.kkokio.domain.security;
+package org.likelion.kkokio.domain.security.dto;
 
 import lombok.AllArgsConstructor;
 import org.likelion.kkokio.domain.adminAccount.entity.AdminAccount;
@@ -22,11 +22,22 @@ public class UserDto implements UserDetails, JwtConvertable {
         return new UserDto(adminAccount.getAccountId(), adminAccount.getAccountLoginId(), adminAccount.getAccountLoginPassword(), List.of(ROLE_ADMIN));
     }
 
+    // Implementations of JwtConvertable
 
     @Override
     public Long getUserId() {
         return userId;
     }
+
+    /**
+     * 사용자에게 보여지는 사용자의 이름(중복이 될 수 도 있음)
+     */
+    @Override
+    public String getVisibleName() {
+        return username;
+    }
+
+    // Implementations of UserDetails
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -40,7 +51,10 @@ public class UserDto implements UserDetails, JwtConvertable {
 
     @Override
     public String getUsername() {
-        return username;
+        if (userId == null) {
+            return null;
+        }
+        return String.valueOf(userId);
     }
 
     @Override

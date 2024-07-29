@@ -34,7 +34,7 @@ public class JwtService {
         Date expiryDate = new Date(now.getTime() + expiration.toMillis());
 
         return Jwts.builder().subject(jwtConvertable.getUserId().toString())
-                .claim(JwtConvertable.USER_NAME_KEY, jwtConvertable.getUsername())
+                .claim(JwtConvertable.USER_NAME_KEY, jwtConvertable.getVisibleName())
                 .claim(JwtConvertable.ROLES_KEY, jwtConvertable.getRolesString())
                 .issuedAt(now)
                 .expiration(expiryDate)

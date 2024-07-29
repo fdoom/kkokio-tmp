@@ -7,7 +7,7 @@ public interface JwtConvertable {
     String ROLES_KEY = "roles";
 
     Long getUserId();
-    String getUsername();
+    String getVisibleName();
     List<String> getRoles();
     default String getRolesString() {
         return String.join(",", getRoles());
@@ -37,7 +37,7 @@ public interface JwtConvertable {
         }
 
         @Override
-        public String getUsername() {
+        public String getVisibleName() {
             return username;
         }
 
