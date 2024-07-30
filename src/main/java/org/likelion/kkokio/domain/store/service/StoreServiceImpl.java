@@ -1,6 +1,5 @@
 package org.likelion.kkokio.domain.store.service;
 
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.likelion.kkokio.domain.adminAccount.entity.AdminAccount;
 import org.likelion.kkokio.domain.adminAccount.repository.AdminAccountRepository;
@@ -20,8 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @Service
 @Transactional
@@ -32,8 +29,6 @@ public class StoreServiceImpl implements StoreService {
     private final ImageService imageService;
     private final ModelMapper modelMapper;
     private final SecurityService securityService;
-
-    private Long MemberId = 1L;
 
     @Override
     public ResponseEntity<StoreInfoResponseDTO> createStoreInfo(MultipartFile image, StoreInfoRequestDTO storeInfoRequestDTO) {

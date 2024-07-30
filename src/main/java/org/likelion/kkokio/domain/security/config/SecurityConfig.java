@@ -56,6 +56,12 @@ public class SecurityConfig {
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/store/info").authenticated()
                         .requestMatchers(HttpMethod.GET, "/store/info/**").permitAll()
+                        .requestMatchers("/category/info").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/category/info/**").permitAll()
+                        .requestMatchers("/menu/info").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/menu/info/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/order/info/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/order/info/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtService, objectMapper),
