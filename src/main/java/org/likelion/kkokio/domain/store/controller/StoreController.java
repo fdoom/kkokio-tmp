@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.likelion.kkokio.domain.security.service.SecurityService;
 import org.likelion.kkokio.domain.store.dto.request.StoreInfoRequestDTO;
 import org.likelion.kkokio.domain.store.dto.response.StoreInfoResponseDTO;
 import org.likelion.kkokio.domain.store.service.StoreService;
@@ -14,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Optional;
 
 
 @RequiredArgsConstructor
