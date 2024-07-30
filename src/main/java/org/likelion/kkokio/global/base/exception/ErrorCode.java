@@ -14,6 +14,8 @@ public enum ErrorCode {
     // ACCOUNT
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자가 존재하지 않습니다."),
     DUPLICATED_USER(HttpStatus.CONFLICT, "이미 존재하는 사용자입니다."),
+    OLD_PASSWORD_UNMATCHED(HttpStatus.BAD_REQUEST, "기존 비밀번호가 일치하지 않습니다."),
+    ACCOUNT_DB_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "DB관련 서버 에러"),
 
     // STORE
     STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "식당 정보가 존재하지 않습니다."),
