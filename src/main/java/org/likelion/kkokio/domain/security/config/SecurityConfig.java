@@ -58,6 +58,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/store/info/**").permitAll()
                         .requestMatchers("/category/info").authenticated()
                         .requestMatchers(HttpMethod.GET, "/category/info/**").permitAll()
+                        .requestMatchers("/menu/info").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/menu/info/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtService, objectMapper),

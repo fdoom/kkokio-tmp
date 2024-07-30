@@ -12,6 +12,7 @@ import org.likelion.kkokio.domain.menu.dto.request.MenuInfoRequestDTO;
 import org.likelion.kkokio.domain.menu.dto.response.MenuInfoResponseDTO;
 import org.likelion.kkokio.domain.menu.entity.Menu;
 import org.likelion.kkokio.domain.menu.repository.MenuRepository;
+import org.likelion.kkokio.domain.security.service.SecurityService;
 import org.likelion.kkokio.global.base.exception.CustomException;
 import org.likelion.kkokio.global.base.exception.ErrorCode;
 import org.modelmapper.ModelMapper;
@@ -32,12 +33,11 @@ public class MenuServiceImpl implements MenuService {
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
     private final ImageService imageService;
-
-    private Long MemberId = 1L;
+    private final SecurityService securityService;
 
     @Override
     public ResponseEntity<MenuInfoResponseDTO> createMenuInfo(Long categoryId, MenuInfoRequestDTO menuInfoRequestDTO, MultipartFile image) {
-        Category category = categoryRepository.findbIdAndAdminAccountIdDeletedAtIsNullJoinStore(MemberId, categoryId)
+        Category category = categoryRepository.findbIdAndAdminAccountIdDeletedAtIsNullJoinStore(securityService.getCurrentUserId().orElseThrow(), categoryId)
                 .orElseThrow(()-> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
 
         Menu menu = modelMapper.map(menuInfoRequestDTO, Menu.class);
@@ -55,13 +55,13 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public ResponseEntity<MenuInfoResponseDTO> updateMenuInfo(Long menuId, MenuInfoPatchRequestDTO menuInfoPatchRequestDTO, MultipartFile image) {
-        Menu menu = menuRepository.findByIdALLDeletedAtIsNull(menuId, MemberId)
+        Menu menu = menuRepository.findByIdALLDeletedAtIsNull(menuId, securityService.getCurrentUserId().orElseThrow())
                 .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
 
         modelMapper.map(menuInfoPatchRequestDTO, menu);
 
         if(menu.getCategory().getCategoryId() != menuInfoPatchRequestDTO.getCategoryId()) {
-            Category category = categoryRepository.findbIdAndAdminAccountIdDeletedAtIsNULL(MemberId, menuInfoPatchRequestDTO.getCategoryId())
+            Category category = categoryRepository.findbIdAndAdminAccountIdDeletedAtIsNULL(securityService.getCurrentUserId().orElseThrow(), menuInfoPatchRequestDTO.getCategoryId())
                     .orElseThrow(()-> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
             menu.updateCategoryInfo(category);
         }
@@ -82,7 +82,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public ResponseEntity<Void> deleteMenuInfo(Long menuId) {
-        Menu menu = menuRepository.findByIdALLDeletedAtIsNull(menuId, MemberId)
+        Menu menu = menuRepository.findByIdALLDeletedAtIsNull(menuId, securityService.getCurrentUserId().orElseThrow())
                 .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
         imageService.deleteImage(menu.getMenuImgUrl());
         menu.deletedInfo();
@@ -107,7 +107,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public ResponseEntity<MenuInfoResponseDTO> deleteImage(Long menuId) {
-        Menu menu = menuRepository.findByIdALLDeletedAtIsNull(menuId, MemberId)
+        Menu menu = menuRepository.findByIdALLDeletedAtIsNull(menuId, securityService.getCurrentUserId().orElseThrow())
                 .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
         imageService.deleteImage(menu.getMenuImgUrl());
         menu.deletImage();

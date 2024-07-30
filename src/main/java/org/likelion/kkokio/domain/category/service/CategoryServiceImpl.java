@@ -31,7 +31,6 @@ public class CategoryServiceImpl implements CategoryService {
     private final ModelMapper modelMapper;
     private final SecurityService securityService;
 
-    private Long MemberId = 1L;
     @Override
     public ResponseEntity<CategoryInfoResponseDTO> createCategoryInfo(Long storeId, CategoryInfoRequestDTO categoryInfoRequestDTO) {
         AdminAccount adminAccount = adminAccountRepository.findById(securityService.getCurrentUserId().orElseThrow()).orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
