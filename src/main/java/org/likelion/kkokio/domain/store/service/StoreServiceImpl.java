@@ -38,7 +38,7 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public ResponseEntity<StoreInfoResponseDTO> createStoreInfo(MultipartFile image, StoreInfoRequestDTO storeInfoRequestDTO) {
         AdminAccount adminAccount = adminAccountRepository.findById(
-                securityService.getCurrentUserId().orElseThrow(() -> new CustomException(ErrorCode.FAILED_JWT)))
+                securityService.getCurrentUserId().orElseThrow())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         Store store = modelMapper.map(storeInfoRequestDTO, Store.class);
 
@@ -54,7 +54,7 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public ResponseEntity<Page<StoreInfoResponseDTO>> getStoreInfoList(Pageable pageable) {
         AdminAccount adminAccount = adminAccountRepository.findById(
-                securityService.getCurrentUserId().orElseThrow(() -> new CustomException(ErrorCode.FAILED_JWT)))
+                securityService.getCurrentUserId().orElseThrow())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         return ResponseEntity.ok(storeRepository.findByAdminAccountAndDeletedAtIsNull(adminAccount, pageable).map( store ->
@@ -64,7 +64,7 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public ResponseEntity<Void> deleteStoreInfo(Long storeId) {
         AdminAccount adminAccount = adminAccountRepository.findById(
-                securityService.getCurrentUserId().orElseThrow(() -> new CustomException(ErrorCode.FAILED_JWT)))
+                securityService.getCurrentUserId().orElseThrow())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
@@ -83,7 +83,7 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public ResponseEntity<StoreInfoResponseDTO> deleteImage(Long storedId) {
         Store store = storeRepository.findByStoreIdAndAccountIdAndDeletedAtIsNull(storedId,
-                        securityService.getCurrentUserId().orElseThrow(() -> new CustomException(ErrorCode.FAILED_JWT)))
+                        securityService.getCurrentUserId().orElseThrow())
                 .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
         imageService.deleteImage(store.getProfile_img_url());
         store.deleteImage();
@@ -101,7 +101,7 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public ResponseEntity<StoreInfoResponseDTO> updateStoreInfo(MultipartFile image, StoreInfoRequestDTO storeInfoRequestDTO, Long storeId) {
         AdminAccount adminAccount = adminAccountRepository.findById(
-                securityService.getCurrentUserId().orElseThrow(() -> new CustomException(ErrorCode.FAILED_JWT)))
+                securityService.getCurrentUserId().orElseThrow())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
