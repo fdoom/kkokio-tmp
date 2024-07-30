@@ -5,12 +5,12 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.likelion.kkokio.global.base.entity.BaseEntity;
 
-@Getter
+@Getter @Setter
 @Entity
 @Table(name = "admin_account")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder(access = AccessLevel.PRIVATE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@Builder
+@AllArgsConstructor
 @AttributeOverrides({
         @AttributeOverride(name = "createdAt", column = @Column(name = "account_create_at", nullable = false, updatable = false)),
         @AttributeOverride(name = "updatedAt", column = @Column(name = "account_update_at", nullable = false)),
