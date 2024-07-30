@@ -7,6 +7,7 @@ import org.likelion.kkokio.domain.adminAccount.dto.AccountView;
 import org.likelion.kkokio.domain.adminAccount.service.AccountService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +19,7 @@ public class AccountController {
     @PostMapping("/accounts")
     @ResponseStatus(HttpStatus.CREATED)
     public AccountView register(
-            @Valid AccountRegisterDto registerDto
+            @RequestBody @Valid AccountRegisterDto registerDto
     ) {
         return accountService.registerAccount(registerDto);
     }
