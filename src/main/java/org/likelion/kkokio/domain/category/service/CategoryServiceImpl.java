@@ -7,6 +7,7 @@ import org.likelion.kkokio.domain.category.dto.request.CategoryInfoRequestDTO;
 import org.likelion.kkokio.domain.category.dto.response.CategoryInfoResponseDTO;
 import org.likelion.kkokio.domain.category.entity.Category;
 import org.likelion.kkokio.domain.category.repository.CategoryRepository;
+import org.likelion.kkokio.domain.security.service.SecurityService;
 import org.likelion.kkokio.domain.store.dto.response.StoreInfoResponseDTO;
 import org.likelion.kkokio.domain.store.entity.Store;
 import org.likelion.kkokio.domain.store.repository.StoreRepository;
@@ -28,11 +29,12 @@ public class CategoryServiceImpl implements CategoryService {
     private final AdminAccountRepository adminAccountRepository;
     private final StoreRepository storeRepository;
     private final ModelMapper modelMapper;
+    private final SecurityService securityService;
 
     private Long MemberId = 1L;
     @Override
     public ResponseEntity<CategoryInfoResponseDTO> createCategoryInfo(Long storeId, CategoryInfoRequestDTO categoryInfoRequestDTO) {
-        AdminAccount adminAccount = adminAccountRepository.findById(MemberId).orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
+        AdminAccount adminAccount = adminAccountRepository.findById(securityService.getCurrentUserId().orElseThrow()).orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
         Store store = storeRepository.findByAdminAccountAndStoreIdAndDeletedAtIsNull(adminAccount, storeId)
                 .orElseThrow(()->new CustomException(ErrorCode.STORE_NOT_FOUND));
 
@@ -52,8 +54,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ResponseEntity<CategoryInfoResponseDTO> updateCategoryInfo(Long categoryId, CategoryInfoRequestDTO categoryInfoRequestDTO) {
-        AdminAccount adminAccount = adminAccountRepository.findById(MemberId).orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
-        Category category = categoryRepository.findbIdAndAdminAccountIdDeletedAtIsNULL(MemberId, categoryId)
+        AdminAccount adminAccount = adminAccountRepository.findById(securityService.getCurrentUserId().orElseThrow()).orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
+        Category category = categoryRepository.findbIdAndAdminAccountIdDeletedAtIsNULL(securityService.getCurrentUserId().orElseThrow(), categoryId)
                 .orElseThrow(()->new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
         Store store = storeRepository.findByAdminAccountAndCategoryAndDeletedAtIsNull(adminAccount, category)
                         .orElseThrow(()->new CustomException(ErrorCode.STORE_NOT_FOUND));
@@ -73,7 +75,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ResponseEntity<Void> deleteCategoryInfo(Long categoryId) {
-        Category category = categoryRepository.findbIdAndAdminAccountIdDeletedAtIsNULL(MemberId, categoryId)
+        Category category = categoryRepository.findbIdAndAdminAccountIdDeletedAtIsNULL(securityService.getCurrentUserId().orElseThrow(), categoryId)
                 .orElseThrow(()->new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
         category.deletedInfo();
         categoryRepository.save(category);
@@ -83,7 +85,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ResponseEntity<Page<CategoryInfoResponseDTO>> getCategoryInfoPage(Long storeId, Pageable pageable) {
         return ResponseEntity.ok(
-                categoryRepository.findByStoreIdAndDeletedAt(storeId, MemberId, pageable)
+                categoryRepository.findByStoreIdAndDeletedAt(storeId, securityService.getCurrentUserId().orElseThrow(), pageable)
                         .map(tuple -> {
                             Category category = (Category) tuple[0];
                             Store store = (Store) tuple[1];
