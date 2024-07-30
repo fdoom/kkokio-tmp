@@ -53,9 +53,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(HttpMethod.POST, "/account").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/store/**").permitAll()
                         .requestMatchers("/login").permitAll()
-                        .anyRequest().permitAll()
+                        .requestMatchers("/store/info").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/store/info/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtService, objectMapper),
                         UsernamePasswordAuthenticationFilter.class);
