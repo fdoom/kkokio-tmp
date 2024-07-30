@@ -8,6 +8,7 @@ import org.likelion.kkokio.domain.order.entity.Orders;
 import org.likelion.kkokio.domain.order.respository.OrdersRepository;
 import org.likelion.kkokio.domain.ordersMenu.dto.OrdersMenuDtoAndMenuDtoAndCategoryDto;
 import org.likelion.kkokio.domain.ordersMenu.service.OrdersMenuService;
+import org.likelion.kkokio.domain.security.service.SecurityService;
 import org.likelion.kkokio.domain.store.entity.Store;
 import org.likelion.kkokio.domain.store.repository.StoreRepository;
 import org.likelion.kkokio.global.base.exception.CustomException;
@@ -29,6 +30,7 @@ public class OrderServiceImpl implements OrderService{
     private final StoreRepository storeRepository;
     private final ModelMapper modelMapper;
     private final OrdersMenuService ordersMenuService;
+    private final SecurityService securityService;
 
     @Override
     public ResponseEntity<OrderInfoResponseDTO> createOrderInfo(Long storeId, List<OrderInfoRequestDTO> orderInfoRequestDTOList) {
@@ -48,12 +50,9 @@ public class OrderServiceImpl implements OrderService{
         return ResponseEntity.ok(orderInfoResponseDTO);
     }
 
-
-    private Long MemberId = 1L;
-
     @Override
     public ResponseEntity<OrderInfoResponseDTO> updateOrderInfo(Long orderId, List<OrderInfoRequestDTO> orderInfoRequestDTOList) {
-        Orders orders = ordersRepository.findByOrderIdAndAdminAccountIdAndDeletedAtIsNullAndCookingStartedAtIsNull(orderId, MemberId)
+        Orders orders = ordersRepository.findByOrderIdAndAdminAccountIdAndDeletedAtIsNullAndCookingStartedAtIsNull(orderId, securityService.getCurrentUserId().orElseThrow())
                 .orElseThrow(()-> new CustomException(ErrorCode.ORDER_NOT_FOUND_OR_NOT_UPDATED));
 
         List<OrdersMenuDtoAndMenuDtoAndCategoryDto> ordersMenuDtoAndMenuDtoAndCategoryDtoList = ordersMenuService.updateOrderInfo(orderId, orderInfoRequestDTOList);
@@ -69,7 +68,7 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public ResponseEntity<OrderTimeResponseDTO> cookOrderInfo(Long orderId) {
-        Orders orders = ordersRepository.findByOrderIdAndAdminAccountIdAndDeletedAtIsNullAndCookingStartedAtIsNull(orderId, MemberId)
+        Orders orders = ordersRepository.findByOrderIdAndAdminAccountIdAndDeletedAtIsNullAndCookingStartedAtIsNull(orderId, securityService.getCurrentUserId().orElseThrow())
                 .orElseThrow(()-> new CustomException(ErrorCode.ORDER_NOT_FOUND_OR_NOT_UPDATED));
 
         orders.updateCookOrderInfo();
@@ -79,7 +78,7 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public ResponseEntity<Void> deleteOrderInfo(Long orderId) {
-        Orders orders = ordersRepository.findByOrderIdAndAdminAccountIdAndDeletedAtIsNullAndCookingStartedAtIsNull(orderId, MemberId)
+        Orders orders = ordersRepository.findByOrderIdAndAdminAccountIdAndDeletedAtIsNullAndCookingStartedAtIsNull(orderId, securityService.getCurrentUserId().orElseThrow())
                 .orElseThrow(()-> new CustomException(ErrorCode.ORDER_NOT_FOUND_OR_NOT_UPDATED));
         orders.deletedInfo();
         ordersRepository.save(orders);
@@ -88,7 +87,7 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public ResponseEntity<OrderTimeResponseDTO> finishOrderInfo(Long orderId) {
-        Orders orders = ordersRepository.findByOderIdAndAdminAccountIdAndDeletedAtIsNullAndOrderFinishedAtIsNull(orderId, MemberId)
+        Orders orders = ordersRepository.findByOderIdAndAdminAccountIdAndDeletedAtIsNullAndOrderFinishedAtIsNull(orderId, securityService.getCurrentUserId().orElseThrow())
                 .orElseThrow(()-> new CustomException(ErrorCode.ORDER_NOT_FOUND_OR_NOT_UPDATED));
         orders.updateFinishedOrderInfo();
         ordersRepository.save(orders);
