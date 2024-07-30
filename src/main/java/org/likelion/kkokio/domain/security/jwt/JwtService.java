@@ -47,6 +47,8 @@ public class JwtService {
         final Jws<Claims> claims;
         try {
             claims = parser.parseSignedClaims(token);
+        } catch (ExpiredJwtException e) {
+            throw new TokenExpiredException();
         } catch (JwtException e) {
             log.debug("JWT parsing failed: {}", e.getMessage());
             throw new InvalidJwtException(e);
@@ -56,8 +58,8 @@ public class JwtService {
         try {
             Claims payload = claims.getPayload();
             Long userId = Long.parseLong(payload.getSubject());
-            String username = payload.get("username", String.class);
-            String rolesString = payload.get("role", String.class);
+            String username = payload.get(JwtConvertable.USER_NAME_KEY, String.class);
+            String rolesString = payload.get(JwtConvertable.ROLES_KEY, String.class);
             jwtConvertable = new JwtConvertable.DefaultJwtConvertable(userId, username, rolesString);
         } catch (Exception e) {
             log.debug("JWT has invalid payload: {}", e.getClass().getSimpleName());

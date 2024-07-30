@@ -10,6 +10,7 @@ public enum ErrorCode {
 
     // SECURITY
     INVALID_JWT(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
+    EXPIRED_JWT(HttpStatus.UNAUTHORIZED, "JWT 토큰 만료"),
 
     // ACCOUNT
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자가 존재하지 않습니다."),

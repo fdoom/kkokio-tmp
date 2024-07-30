@@ -1,7 +1,10 @@
 package org.likelion.kkokio.domain.security.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.likelion.kkokio.domain.security.JwtGrantAuthenticationSuccessHandler;
+import org.likelion.kkokio.domain.security.filter.JwtAuthenticationFilter;
+import org.likelion.kkokio.domain.security.jwt.JwtService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,6 +20,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -25,6 +29,8 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 public class SecurityConfig {
     private final static AuthenticationFailureHandler BAD_REQUEST_FAILURE_HANDLER = (request, response, exception) -> response.setStatus(HttpStatus.BAD_REQUEST.value());
     private final static AccessDeniedHandler ACCESS_DENIED_HANDLER = (request, response, accessDeniedException) -> response.setStatus(HttpStatus.FORBIDDEN.value());
+    private final JwtService jwtService;
+    private final ObjectMapper objectMapper;
 
     @Bean
     public SecurityFilterChain filterChain(
@@ -50,7 +56,10 @@ public class SecurityConfig {
                         .requestMatchers("/store/**").permitAll()
                         .requestMatchers("/login").permitAll()
                         .anyRequest().permitAll()
-                );
+                )
+                .addFilterBefore(new JwtAuthenticationFilter(jwtService, objectMapper),
+                        UsernamePasswordAuthenticationFilter.class);
+
         return httpSecurity.build();
     }
 
