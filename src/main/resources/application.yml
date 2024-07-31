@@ -46,3 +46,5 @@ spring:
 jwt:
   secret-key: ${JWT_SECRET_KEY}
   expiration-seconds: ${JWT_EXPIRATION_SECONDS}
+cors:
+  allowedOrigins: ${CORS_ALLOWED_ORIGINS}
