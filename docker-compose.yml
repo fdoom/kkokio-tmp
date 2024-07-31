@@ -1,0 +1,10 @@
+version: '3'
+services:
+  app:
+    image: ojkim/kkokio:1.0.0
+    env_file:
+      - vars.env
+    volumes:
+      - .:/etc/kkokio
+    ports:
+      - "8080:8080"
