@@ -52,6 +52,9 @@ dependencies {
 
 	// FORWARDING
 	implementation 'org.springframework.cloud:spring-cloud-starter-gateway-mvc'
+
+	// MONITORING
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
 dependencyManagement {

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.stream.Collectors;
 
@@ -78,11 +79,24 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(HttpStatus.FORBIDDEN, "Operation Not Allowed"));
     }
 
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoResourceFoundException(NoResourceFoundException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(HttpStatus.NOT_FOUND, e.getMessage()));
+    }
+
     @ExceptionHandler(Throwable.class)
     public ResponseEntity<ErrorResponse> unhandledException(Throwable throwable) {
+        StringBuilder detail = new StringBuilder();
+        detail.append(throwable.getClass().getName())
+                .append(": ")
+                .append(throwable.getMessage());
+
         log.info("unhandled error", throwable);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .header("X-Debug-Cause", detail.toString())
                 .body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "UNHANDLED_ERROR"));
     }
 
