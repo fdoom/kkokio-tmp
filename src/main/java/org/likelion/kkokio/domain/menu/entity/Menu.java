@@ -3,6 +3,7 @@ package org.likelion.kkokio.domain.menu.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.likelion.kkokio.domain.category.entity.Category;
+import org.likelion.kkokio.domain.extra.entity.Extra;
 import org.likelion.kkokio.domain.ordersMenu.entity.OrdersMenu;
 import org.likelion.kkokio.global.base.entity.BaseEntity;
 
@@ -37,6 +38,9 @@ public class Menu extends BaseEntity {
 
     @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY)
     private List<OrdersMenu> ordersMenu = new ArrayList<>();
+
+    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY)
+    private List<Extra> extra = new ArrayList<>();
 
     public void updateCategoryInfo(Category category) {
         this.category = category;

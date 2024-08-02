@@ -55,14 +55,27 @@ public class SecurityConfig {
                         .requestMatchers("/accounts/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/login").permitAll()
+
+                        //store
                         .requestMatchers("/store/info").authenticated()
                         .requestMatchers(HttpMethod.GET, "/store/info/**").permitAll()
+
+                        //category
                         .requestMatchers("/category/info").authenticated()
                         .requestMatchers(HttpMethod.GET, "/category/info/**").permitAll()
+
+                        //menu
                         .requestMatchers("/menu/info").authenticated()
                         .requestMatchers(HttpMethod.GET, "/menu/info/**").permitAll()
+
+                        //order
                         .requestMatchers(HttpMethod.POST, "/order/info/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/order/info/**").permitAll()
+
+                        //extra
+                        .requestMatchers("/extra/info").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/extra/info/**").permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtService, objectMapper),

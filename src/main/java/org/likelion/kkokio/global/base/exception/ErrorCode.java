@@ -40,7 +40,10 @@ public enum ErrorCode {
     // ORDER
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "주문 정보를 찾을 수 없습니다."),
 
-    ORDER_NOT_FOUND_OR_NOT_UPDATED(HttpStatus.CONFLICT, "주문 정보가 존재하지 않거나 변경이 불가능합니다.")
+    ORDER_NOT_FOUND_OR_NOT_UPDATED(HttpStatus.CONFLICT, "주문 정보가 존재하지 않거나 변경이 불가능합니다."),
+
+    // EXTRA
+    EXTRA_NOT_FOUND(HttpStatus.NOT_FOUND, "메뉴 추가 옵션 정보가 존재하지 않습니다."),
 
     ;
 
