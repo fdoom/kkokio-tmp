@@ -16,7 +16,7 @@ public class WebConfig implements WebMvcConfigurer {
         // 일단 이렇게
         registry.addMapping("/**")
                 .allowedOrigins(corsProperties.getAllowedOrigins())
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
                 .allowedHeaders("*")
                 .exposedHeaders("Custom-Header")
                 .allowCredentials(true)
