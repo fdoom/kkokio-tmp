@@ -84,7 +84,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ResponseEntity<Page<CategoryInfoResponseDTO>> getCategoryInfoPage(Long storeId, Pageable pageable) {
         return ResponseEntity.ok(
-                categoryRepository.findByStoreIdAndDeletedAt(storeId, securityService.getCurrentUserId().orElseThrow(), pageable)
+                categoryRepository.findByStoreIdAndDeletedAt(storeId, pageable)
                         .map(tuple -> {
                             Category category = (Category) tuple[0];
                             Store store = (Store) tuple[1];
